@@ -26,9 +26,9 @@ class MTPaymentValidateOrderModuleFrontController extends ModuleFrontController
         $websocket = Tools::getValue('websocket');
         $amount = Tools::getValue('amount');
 
-        $id_order = MTOrders::open($id_transaction, $amount, $websocket);
+        $isValidOrder = MTOrders::open($id_transaction, $amount, $websocket);
 
-        if (isset($id_order)) {
+        if ($isValidOrder) {
             die(Tools::jsonEncode(array(
                 'success' => true,
                 'order' => MTPayment::getInstance()->currentOrder

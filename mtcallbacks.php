@@ -51,10 +51,9 @@ class MTCallbacks
      * @param $callback
      * @param $id_transaction
      * @param $amount
-     * @param null $date
      * @throws PrestaShopDatabaseException
      */
-    public static function insert($callback, $id_transaction, $amount, $date = null)
+    public static function insert($callback, $id_transaction, $amount)
     {
         Db::getInstance()->insert(
             'mtcallbacks',
@@ -62,7 +61,6 @@ class MTCallbacks
                 'callback' => pSQL($callback),
                 'id_transaction' => pSQL($id_transaction),
                 'amount' => pSQL($amount),
-                'callback_date' => isset($date)?date('Y-m-d H:i:s', strtotime($date)):null
             )
         );
     }

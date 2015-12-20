@@ -3,8 +3,7 @@
     text-align: center;
 }
 
-.payment_module .mtpayment-submit,
-.cart_navigation .mtpayment-submit {
+.payment_module .mtpayment-submit {
     display: inline-block;
     box-sizing: border-box;
     max-width: 100%;
@@ -29,32 +28,9 @@
     text-decoration: none;
 }
 
-.payment_module .mtpayment-submit:hover,
-.cart_navigation .mtpayment-submit:hover {
+.payment_module .mtpayment-submit:hover {
     text-decoration: none;
     background-color: #0B8FE3 !important;
     border-color: #0B8FE3 !important;
     background-image: linear-gradient(to top, rgba(24, 24, 25, 0.05), rgba(255, 255, 255, 0.05));
-}
-
-p.payment_module a.mtpayment {
-    background: url(../img/payment.png) 15px 12px no-repeat #fbfbfb;
-}
-
-p.payment_module a.mtpayment img {
-    display: none;
-}
-
-p.payment_module a.mtpayment::after {
-    display: block;
-    content: "\f054";
-    position: absolute;
-    right: 15px;
-    margin-top: -11px;
-    top: 50%;
-    font-family: "FontAwesome";
-    font-size: 25px;
-    height: 22px;
-    width: 14px;
-    color: #777;
 }

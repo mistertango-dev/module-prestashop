@@ -32,7 +32,7 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->tab = 'payments_gateways';
-        $this->version = '1.1.4';
+        $this->version = '0.5.0';
         $this->author = 'MisterTango';
         $this->is_eu_compatible = 1;
 
@@ -136,7 +136,6 @@ class MTPayment extends PaymentModule
         if (Tools::isSubmit('btnSubmit')) {
             MTConfiguration::updateUsername(Tools::getValue(MTConfiguration::NAME_USERNAME));
             MTConfiguration::updateSecretKey(Tools::getValue(MTConfiguration::NAME_SECRET_KEY));
-            MTConfiguration::updateEnabledConfirmPage(Tools::getValue(MTConfiguration::NAME_ENABLED_CONFIRM_PAGE));
         }
 
         return $this->displayConfirmation($this->l('Settings updated'));
@@ -165,26 +164,6 @@ class MTPayment extends PaymentModule
                         'label' => $this->l('Secret key'),
                         'name' => MTConfiguration::NAME_SECRET_KEY,
                         'required' => true,
-                    ),
-                    array(
-                        'type' => 'select',
-                        'label' => $this->l('Enable standard mode'),
-                        'name' => MTConfiguration::NAME_ENABLED_CONFIRM_PAGE,
-                        'required' => true,
-                        'options' => array(
-                            'query' => array(
-                                array(
-                                    'id_option' => 0,
-                                    'name' => $this->l('No')
-                                ),
-                                array(
-                                    'id_option' => 1,
-                                    'name' => $this->l('Yes')
-                                ),
-                            ),
-                            'id' => 'id_option',
-                            'name' => 'name'
-                        )
                     ),
                 ),
                 'submit' => array(
@@ -236,10 +215,6 @@ class MTPayment extends PaymentModule
                 MTConfiguration::NAME_SECRET_KEY,
                 MTConfiguration::getSecretKey()
             ),
-            MTConfiguration::NAME_ENABLED_CONFIRM_PAGE => Tools::getValue(
-                MTConfiguration::NAME_ENABLED_CONFIRM_PAGE,
-                (int)MTConfiguration::isEnabledConfirmPage()
-            ),
         );
     }
 
@@ -254,7 +229,6 @@ class MTPayment extends PaymentModule
 
         $this->smarty->assign(array(
             'mtpayment_username' => MTConfiguration::getUsername(),
-            'mtpayment_enabled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
             'mtpayment_url_validate_order' => Context::getContext()->link->getModuleLink(
                 'mtpayment',
                 'validate-order'
@@ -295,11 +269,9 @@ class MTPayment extends PaymentModule
 
         $this->assignTemplateAssets($this->smarty, $cart);
 
-		$transaction = MTTransactions::getLastForOrder($order->id);
-		
         $this->smarty->assign(array(
             'order' => $order,
-            'websocket' => isset($transaction['websocket'])?$transaction['websocket']:null,
+            'transaction' => MTTransactions::getLastForOrder($order->id),
             'allow_different_payment' => $allow_different_payment,
         ));
 
@@ -359,9 +331,8 @@ class MTPayment extends PaymentModule
         $smarty->assign(array(
             'mtpayment_version' => $this->version,
             'mtpayment_path' => $this->_path,
-            'enbaled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
             'customer_email' => $this->getContextCustomer()->email,
-            'transaction' => $cart->id . '_' . time(),
+            'id_transaction' => $cart->id . '_' . time(),
             'cart_currency_iso_code' => $currency->iso_code,
             'amount' => number_format($cart->getOrderTotal(), 2, '.', ''),
         ));

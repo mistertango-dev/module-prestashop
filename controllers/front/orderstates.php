@@ -33,13 +33,26 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             Tools::redirect('index.php?controller=order&step=1');
         }
 
-        $order = new Order(Tools::getValue('order'));
+        $authorized = false;
 
-        if (!Validate::isLoadedObject($order)) {
-            die($this->module->l('Order is invalid.', 'mtpayment'));
+        foreach (Module::getPaymentModules() as $module) {
+            if ($module['name'] == 'mtpayment') {
+                $authorized = true;
+                break;
+            }
         }
 
+        if (!$authorized) {
+            die($this->module->l('This payment method is not available.', 'validation'));
+        }
+
+        $order = new Order(Tools::getValue('id_order'));
         $cart = new Cart($order->id_cart);
+
+        $customer = new Customer($cart->id_customer);
+        if (!Validate::isLoadedObject($customer)) {
+            Tools::redirect('index.php?controller=order&step=1');
+        }
 
         MTPayment::getInstance()->assignTemplateAssets($this->context->smarty, $cart);
         $this->context->controller->addJS(_MODULE_DIR_ . $this->module->name . '/views/js/order-states.js');
@@ -61,7 +74,7 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             )));
         }
 
-        $id_order = Tools::getValue('order');
+        $id_order = Tools::getValue('id_order');
 
         $order = new Order($id_order);
 
@@ -121,13 +134,11 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
                 }
             }
         }
-		
-		$transaction = MTTransactions::getLastForOrder($order->id);
 
         $smarty->assign(array(
             'order' => $order,
             'history' => $history,
-            'websocket' => isset($transaction['websocket'])?$transaction['websocket']:null,
+            'transaction' => MTTransactions::getLastForOrder($order->id),
             'total' => $cart->getOrderTotal(true, Cart::BOTH),
             'id_order_state_pending' => $id_order_state_pending,
             'allow_different_payment' => $allow_different_payment,
