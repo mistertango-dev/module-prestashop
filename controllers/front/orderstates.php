@@ -74,7 +74,7 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             )));
         }
 
-        $id_order = Tools::getValue('id_order');
+        $id_order = Tools::getValue('order');
 
         $order = new Order($id_order);
 
