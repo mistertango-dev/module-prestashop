@@ -46,13 +46,13 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             die($this->module->l('This payment method is not available.', 'validation'));
         }
 
-        $order = new Order(Tools::getValue('id_order'));
-        $cart = new Cart($order->id_cart);
+        $order = new Order(Tools::getValue('order'));
 
-        $customer = new Customer($cart->id_customer);
-        if (!Validate::isLoadedObject($customer)) {
-            Tools::redirect('index.php?controller=order&step=1');
+        if (!Validate::isLoadedObject($order)) {
+            die($this->module->l('Order is invalid.', 'mtpayment'));
         }
+
+        $cart = new Cart($order->id_cart);
 
         MTPayment::getInstance()->assignTemplateAssets($this->context->smarty, $cart);
         $this->context->controller->addJS(_MODULE_DIR_ . $this->module->name . '/views/js/order-states.js');

@@ -34,7 +34,7 @@ class MTPaymentValidateTransactionModuleFrontController extends ModuleFrontContr
 
             die(Tools::jsonEncode(array(
                 'success' => true,
-                'id_order' => $order->id,
+                'order' => $order->id,
             )));
         }
 
