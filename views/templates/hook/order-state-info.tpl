@@ -9,7 +9,7 @@
      data-order="{$order->id|escape:'htmlall':'UTF-8'}"
      data-amount="{$amount|escape:'htmlall':'UTF-8'}"
      data-currency="{$cart_currency_iso_code|escape:'htmlall':'UTF-8'}"
-     data-transaction="{$id_transaction|escape:'htmlall':'UTF-8'}">
+     data-transaction="{$transaction|escape:'htmlall':'UTF-8'}">
     {l s='click here' mod='mtpayment'}
   </a>
 </p>

@@ -6,7 +6,7 @@
      data-customer-email="{$customer_email}"
      data-amount="{$amount|escape:'htmlall':'UTF-8'}"
      data-currency="{$cart_currency_iso_code|escape:'htmlall':'UTF-8'}"
-     data-transaction="{$id_transaction|escape:'htmlall':'UTF-8'}">
+     data-transaction="{$transaction|escape:'htmlall':'UTF-8'}">
     {l s='Checkout' mod='mtpayment'} {convertPrice price=$amount}
   </a>
 </p>
@@ -20,7 +20,7 @@
          data-customer-email="{$customer_email}"
          data-amount="{$amount|escape:'htmlall':'UTF-8'}"
          data-currency="{$cart_currency_iso_code|escape:'htmlall':'UTF-8'}"
-         data-transaction="{$id_transaction|escape:'htmlall':'UTF-8'}">
+         data-transaction="{$transaction|escape:'htmlall':'UTF-8'}">
         {l s='Checkout' mod='mtpayment'} {convertPrice price=$amount}
       </a>
     </p>

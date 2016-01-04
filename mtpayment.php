@@ -332,7 +332,7 @@ class MTPayment extends PaymentModule
             'mtpayment_version' => $this->version,
             'mtpayment_path' => $this->_path,
             'customer_email' => $this->getContextCustomer()->email,
-            'id_transaction' => $cart->id . '_' . time(),
+            'transaction' => $cart->id . '_' . time(),
             'cart_currency_iso_code' => $currency->iso_code,
             'amount' => number_format($cart->getOrderTotal(), 2, '.', ''),
         ));
