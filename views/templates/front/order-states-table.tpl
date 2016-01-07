@@ -23,13 +23,13 @@
         {l s='Check your email, we sent you an invoice. If you wish to use other methods for payment' mod='mtpayment'} -
         <a href="#"
            class="mtpayment-submit"
-           data-ws-id="{$transaction.id_websocket|escape:'htmlall':'UTF-8'}"
-           data-language-code="{$lang_iso|escape:'htmlall':'UTF-8'}"
+           data-websocket="{$websocket|escape:'htmlall':'UTF-8'}"
+           data-language="{$lang_iso|escape:'htmlall':'UTF-8'}"
            data-customer-email="{$customer_email}"
-           data-id-order="{$order->id|escape:'htmlall':'UTF-8'}"
+           data-order="{$order->id|escape:'htmlall':'UTF-8'}"
            data-amount="{$amount|escape:'htmlall':'UTF-8'}"
            data-currency="{$cart_currency_iso_code|escape:'htmlall':'UTF-8'}"
-           data-id-transaction="{$transaction|escape:'htmlall':'UTF-8'}">
+           data-transaction="{$transaction|escape:'htmlall':'UTF-8'}">
           {l s='click here' mod='mtpayment'}
         </a>
       </p>

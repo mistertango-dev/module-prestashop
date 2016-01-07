@@ -32,7 +32,7 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->tab = 'payments_gateways';
-        $this->version = '0.5.0';
+        $this->version = '0.9.5';
         $this->author = 'MisterTango';
         $this->is_eu_compatible = 1;
 
@@ -269,9 +269,11 @@ class MTPayment extends PaymentModule
 
         $this->assignTemplateAssets($this->smarty, $cart);
 
+		$transaction = MTTransactions::getLastForOrder($order->id);
+		
         $this->smarty->assign(array(
             'order' => $order,
-            'transaction' => MTTransactions::getLastForOrder($order->id),
+            'websocket' => isset($transaction['websocket'])?$transaction['websocket']:null,
             'allow_different_payment' => $allow_different_payment,
         ));
 

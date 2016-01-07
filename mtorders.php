@@ -124,6 +124,11 @@ class MTOrders
         MTPayment::getInstance()->setContextCustomer(MTPayment::getInstance()->getContextCart()->id_customer);
 
         $order = new Order($id_order);
+        $history = $order->getHistory($order->id_lang);
+
+        if (empty($history)) {
+            return false;
+        }
 
         if (!Validate::isLoadedObject($order)) {
             //@todo: exception should be logged.

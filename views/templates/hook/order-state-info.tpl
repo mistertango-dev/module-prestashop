@@ -3,7 +3,7 @@
   {l s='Check your email, we sent you an invoice. If you wish to use other methods for payment' mod='mtpayment'} -
   <a href="#"
      class="mtpayment-submit"
-     data-websocket="{$transaction.id_websocket|escape:'htmlall':'UTF-8'}"
+     data-websocket="{$websocket|escape:'htmlall':'UTF-8'}"
      data-language="{$lang_iso|escape:'htmlall':'UTF-8'}"
      data-customer-email="{$customer_email}"
      data-order="{$order->id|escape:'htmlall':'UTF-8'}"

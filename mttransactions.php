@@ -39,9 +39,10 @@ class MTTransactions
      * @param $id_order
      * @param $websocket
      * @param $amount
+     * @param null $date
      * @throws PrestaShopDatabaseException
      */
-    public static function insert($id_transaction, $id_order, $websocket, $amount)
+    public static function insert($id_transaction, $id_order, $websocket, $amount, $date = null)
     {
         $exists = (bool) Db::getInstance()->getValue(
             'SELECT 1 FROM `'._DB_PREFIX_.'mttransactions`
@@ -56,6 +57,7 @@ class MTTransactions
                     'id_order' => pSQL((int) $id_order),
                     'websocket' => pSQL($websocket),
                     'amount' => pSQL((float) $amount),
+                    'payment_date' => isset($date)?date('Y-m-d H:i:s', strtotime($date)):null
                 )
             );
         }

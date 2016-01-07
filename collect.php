@@ -52,19 +52,6 @@ if (empty($existsTransactions) && empty($existsCallbacks)) {
 } elseif (empty($existsTransactions) || empty($existsCallbacks)) {
     echo 'Not all table were found. Only some data were collected.<br />';
 } else {
-    echo 'Data was successfully collected.<br /><br />';
+    echo 'Data was successfully collected.<br />';
 }
 
-$username = Configuration::get('MRTANGO_USERNAME');
-$secretKey = Configuration::get('MRTANGO_SECRET_KEY');
-
-
-if (!empty($username)) {
-    MTConfiguration::updateUsername($username);
-    echo 'Username was transfered.<br />';
-}
-
-if (!empty($secretKey)) {
-    MTConfiguration::updateSecretKey($secretKey);
-    echo 'Secret key was transfered.<br />';
-}

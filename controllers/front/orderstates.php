@@ -33,19 +33,6 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             Tools::redirect('index.php?controller=order&step=1');
         }
 
-        $authorized = false;
-
-        foreach (Module::getPaymentModules() as $module) {
-            if ($module['name'] == 'mtpayment') {
-                $authorized = true;
-                break;
-            }
-        }
-
-        if (!$authorized) {
-            die($this->module->l('This payment method is not available.', 'validation'));
-        }
-
         $order = new Order(Tools::getValue('order'));
 
         if (!Validate::isLoadedObject($order)) {
@@ -134,11 +121,13 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
                 }
             }
         }
+		
+		$transaction = MTTransactions::getLastForOrder($order->id);
 
         $smarty->assign(array(
             'order' => $order,
             'history' => $history,
-            'transaction' => MTTransactions::getLastForOrder($order->id),
+            'websocket' => isset($transaction['websocket'])?$transaction['websocket']:null,
             'total' => $cart->getOrderTotal(true, Cart::BOTH),
             'id_order_state_pending' => $id_order_state_pending,
             'allow_different_payment' => $allow_different_payment,

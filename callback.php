@@ -25,8 +25,8 @@ if ($hash !== false) {
     /*
      * Debug purpose only
      */
-    //$data->custom->description = '40_1450273575';
-    //$data->custom->data->amount = '19.85';
+    //$data->custom->description = '41_1452178506';
+    //$data->custom->data->amount = '65.34';
 
     $message = '';
     $transaction = explode('_', $data->custom->description);
@@ -44,7 +44,7 @@ if ($hash !== false) {
     try {
         $id_cart = $transaction[0];
         $id_transaction = implode('_', $transaction);
-
+		
         $success = MTOrders::close(
             $id_transaction,
             $data->custom->data->amount
