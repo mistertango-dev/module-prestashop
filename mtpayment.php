@@ -32,7 +32,7 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->tab = 'payments_gateways';
-        $this->version = '0.9.5';
+        $this->version = '0.9.7';
         $this->author = 'MisterTango';
         $this->is_eu_compatible = 1;
 
