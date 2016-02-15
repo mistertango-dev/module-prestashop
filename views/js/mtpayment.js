@@ -23,8 +23,6 @@ MTPayment = {
     },
     initButtonPay: function () {
         $(document).on('click', '.mtpayment-submit', function (e) {
-            e.preventDefault();
-
             if (typeof $(this).data('ws-id') != 'undefined') {
                 mrTangoCollect.ws_id = $(this).data('websocket');
             }
@@ -48,6 +46,8 @@ MTPayment = {
             mrTangoCollect.set.lang(MTPayment.language);
 
             mrTangoCollect.submit();
+
+            return false;
         });
     },
     onOpen: function () {
