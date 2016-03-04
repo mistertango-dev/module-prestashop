@@ -65,14 +65,15 @@ class MTOrders
 	 * @param $id_transaction
 	 * @param $amount
 	 * @param null $websocket
-	 * @return bool
+	 * @return false|null|string
 	 */
 	public static function open($id_transaction, $amount, $websocket = null)
 	{
-		$result = false;
 		$transaction = explode('_', $id_transaction);
 
-		if (count($transaction) == 2) {
+		$id_order = MTTransactions::getOrderIdByTransaction($id_transaction);
+
+		if ($id_order === false && count($transaction) == 2) {
 			MTTransactions::insert($id_transaction, 0, $websocket, $amount);
 
 			$id_cart = $transaction[0];
@@ -100,11 +101,9 @@ class MTOrders
 					MTPayment::getInstance()->pcc->transaction_id = $id_transaction;
 				}
 			}
-
-			$result = true;
 		}
 
-		return $result;
+		return $id_order;
 	}
 
 	/**
@@ -114,18 +113,10 @@ class MTOrders
 	 */
 	public static function close($id_transaction, $amount)
 	{
-		$id_order = MTTransactions::getOrderIdByTransaction($id_transaction);
-
-		if (is_numeric($id_order) && $id_order == 0) {
-			//@todo: exception should be logged.
-
-			return false;
-		}
+		$id_order = self::open($id_transaction, $amount);
 
 		if (empty($id_order)) {
-			self::open($id_transaction, $amount);
-
-			$id_order = MTTransactions::getOrderIdByTransaction($id_transaction);
+			return false;
 		}
 
 		MTPayment::getInstance()->setContextCart(Order::getCartIdStatic($id_order));

@@ -25,8 +25,8 @@ if ($hash !== false) {
     /*
      * Debug purpose only
      */
-    //$data->custom->description = '41_1452178506';
-    //$data->custom->data->amount = '65.34';
+    //$data->custom->description = '47_1457089158';
+    //$data->custom->data->amount = '31.46';
 
     $message = '';
     $transaction = explode('_', $data->custom->description);
