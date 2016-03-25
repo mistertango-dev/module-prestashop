@@ -22,6 +22,11 @@ class MTConfiguration
     /**
      *
      */
+    const NAME_ENABLED_CONFIRM_PAGE = 'MT_ENABLED_CONFIRM_PAGE';
+
+    /**
+     *
+     */
     const NAME_OS_PENDING = 'MT_OS_PENDING';
 
     /**
@@ -56,6 +61,23 @@ class MTConfiguration
     public static function updateSecretKey($value)
     {
         return Configuration::updateValue(self::NAME_SECRET_KEY, $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function isEnabledConfirmPage()
+    {
+        return (bool)Configuration::get(self::NAME_ENABLED_CONFIRM_PAGE);
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public static function updateEnabledConfirmPage($value)
+    {
+        return Configuration::updateValue(self::NAME_ENABLED_CONFIRM_PAGE, $value);
     }
 
     /**

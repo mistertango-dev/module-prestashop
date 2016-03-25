@@ -18,7 +18,7 @@ class MTOrders
 		$order_state = new OrderState();
 		$order_states_names = array();
 
-		require_once dirname(__FILE__).'/translations/order_states.php';
+		require_once dirname(__FILE__).'/order_states.php';
 
 		foreach (Language::getLanguages(false) as $language) {
 			$name =
