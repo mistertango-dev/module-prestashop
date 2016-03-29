@@ -3,7 +3,8 @@
     text-align: center;
 }
 
-.mtpayment-submit {
+.payment_module .mtpayment-submit,
+.cart_navigation .mtpayment-submit {
     display: inline-block;
     box-sizing: border-box;
     max-width: 100%;
@@ -18,8 +19,8 @@
     background-image: linear-gradient(to top, rgba(24, 24, 25, 0.05), rgba(255, 255, 255, 0.05));
     line-height: 30px;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 18px !important;
-    color: #FFF !important;
+    font-size: 18px;
+    color: #FFF;
     margin-bottom: 0px;
     font-weight: 400;
     text-align: center;
@@ -28,7 +29,8 @@
     text-decoration: none;
 }
 
-.mtpayment-submit:hover {
+.payment_module .mtpayment-submit:hover,
+.cart_navigation .mtpayment-submit:hover {
     text-decoration: none;
     background-color: #0B8FE3 !important;
     border-color: #0B8FE3 !important;
