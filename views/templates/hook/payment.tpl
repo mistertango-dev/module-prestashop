@@ -3,9 +3,10 @@
   <div class="col-xs-12">
 {/if}
 
-{if $mtpayment_enabled_confirm_page}
+{if $enbaled_confirm_page == true}
 <p class="payment_module">
   <a href="{$link->getModuleLink('mtpayment', 'confirm')|escape:'html'}" class="mtpayment" title="{l s='Internet banking' mod='mtpayment'}">
+    <img src="/modules/mtpayment/views/img/payment.png" />
     Internet banking
   </a>
 </p>
@@ -18,7 +19,7 @@
      data-amount="{$amount|escape:'htmlall':'UTF-8'}"
      data-currency="{$cart_currency_iso_code|escape:'htmlall':'UTF-8'}"
      data-transaction="{$transaction|escape:'htmlall':'UTF-8'}">
-    {l s='Checkout' mod='mtpayment'} {convertPrice price=$amount}
+    {l s='Checkout' mod='mtpayment'} {$enbaled_confirm_page|@var_dump} {convertPrice price=$amount}
   </a>
 </p>
 {/if}

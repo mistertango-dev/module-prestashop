@@ -32,7 +32,7 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->tab = 'payments_gateways';
-        $this->version = '1.1.3';
+        $this->version = '1.1.4';
         $this->author = 'MisterTango';
         $this->is_eu_compatible = 1;
 
@@ -359,7 +359,7 @@ class MTPayment extends PaymentModule
         $smarty->assign(array(
             'mtpayment_version' => $this->version,
             'mtpayment_path' => $this->_path,
-            'mtpayment_enbaled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
+            'enbaled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
             'customer_email' => $this->getContextCustomer()->email,
             'transaction' => $cart->id . '_' . time(),
             'cart_currency_iso_code' => $currency->iso_code,

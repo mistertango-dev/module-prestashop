@@ -41,6 +41,10 @@ p.payment_module a.mtpayment {
     background: url(../img/payment.png) 15px 12px no-repeat #fbfbfb;
 }
 
+p.payment_module a.mtpayment img {
+    display: none;
+}
+
 p.payment_module a.mtpayment::after {
     display: block;
     content: "\f054";
