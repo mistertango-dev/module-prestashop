@@ -32,7 +32,7 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->tab = 'payments_gateways';
-        $this->version = '1.1.2';
+        $this->version = '1.1.3';
         $this->author = 'MisterTango';
         $this->is_eu_compatible = 1;
 
@@ -168,7 +168,7 @@ class MTPayment extends PaymentModule
                     ),
                     array(
                         'type' => 'select',
-                        'label' => $this->l('Enable confirmation page (useful when you have custom checkout)'),
+                        'label' => $this->l('Enable standard mode'),
                         'name' => MTConfiguration::NAME_ENABLED_CONFIRM_PAGE,
                         'required' => true,
                         'options' => array(
