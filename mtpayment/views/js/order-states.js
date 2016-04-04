@@ -1,0 +1,30 @@
+MTPayment.OrderStates = {
+    init: function () {
+        setInterval(MTPayment.OrderStates.updateTable, 30000);
+    },
+    updateTable: function () {
+        $.ajax({
+            type: 'GET',
+            async: true,
+            dataType: "json",
+            url: MTPAYMENT_URL_ORDER_STATES,
+            headers: {
+                'cache-control': 'no-cache'
+            },
+            cache: false,
+            data: {
+                ajax: true,
+                order: MTPAYMENT_ORDER_ID
+            },
+            success: function(data)
+            {
+                $('#mtpayment-order-states-table').replaceWith(data.html);
+                if (MTPayment.disallowDifferentPayment) {
+                    $('.jsAllowDifferentPayment').remove();
+                }
+            }
+        });
+    }
+};
+
+$(MTPayment.OrderStates.init);
