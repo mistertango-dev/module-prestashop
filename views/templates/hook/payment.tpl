@@ -19,7 +19,7 @@
      data-amount="{$amount|escape:'htmlall':'UTF-8'}"
      data-currency="{$cart_currency_iso_code|escape:'htmlall':'UTF-8'}"
      data-transaction="{$transaction|escape:'htmlall':'UTF-8'}">
-    {l s='Checkout' mod='mtpayment'} {$enbaled_confirm_page|@var_dump} {convertPrice price=$amount}
+    {l s='Checkout' mod='mtpayment'} {convertPrice price=$amount}
   </a>
 </p>
 {/if}
