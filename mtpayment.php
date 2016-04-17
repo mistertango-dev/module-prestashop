@@ -46,6 +46,7 @@ class MTPayment extends PaymentModule
         /* Backward compatibility */
         if (_PS_VERSION_ < '1.5') {
             require _PS_MODULE_DIR_ . $this->name . '/backward_compatibility/backward.php';
+            require_once(_PS_MODULE_DIR_ . 'mtpayment/backward_compatibility/1.4/mtpayment_1.4.php');
         }
 
         self::$instance = $this;
@@ -56,17 +57,43 @@ class MTPayment extends PaymentModule
      */
     public function install()
     {
+        if (_PS_VERSION_ < '1.5') {
+            $hooks = array(
+                'header',
+                'payment',
+                'paymentReturn'
+            );
+        } else {
+            $hooks = array(
+                'displayHeader',
+                'displayOrderStateInfo',
+                'payment',
+                'paymentReturn'
+            );
+        }
+
         if (
             !parent::install() ||
-            !$this->registerHook('displayHeader') ||
-            !$this->registerHook('displayOrderStateInfo') ||
-            !$this->registerHook('payment') ||
-            !$this->registerHook('paymentReturn') ||
+            !$this->registerHooks($hooks) ||
             !MTTransactions::install() ||
             !MTCallbacks::install() ||
             !MTOrders::insertState()
         ) {
             return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    private function registerHooks($hooks)
+    {
+        foreach($hooks AS $hook) {
+            if(!$this->registerHook($hook)) {
+                return false;
+            }
         }
 
         return true;
@@ -108,7 +135,11 @@ class MTPayment extends PaymentModule
     {
         $this->postProcess();
 
-        $this->_html = $this->renderForm();
+        if (_PS_VERSION_ < '1.5') {
+            $this->_html = MtPayment_1_4::renderForm();
+        } else {
+            $this->_html = $this->renderForm();
+        }
 
         return $this->_html;
     }
@@ -244,6 +275,7 @@ class MTPayment extends PaymentModule
     }
 
     /**
+     * Presta 1.5 header hook
      * @param $params
      */
     public function hookDisplayHeader($params)
@@ -270,6 +302,15 @@ class MTPayment extends PaymentModule
         ));
 
         return $this->display(__FILE__, 'header.tpl');
+    }
+
+    /**
+     * Presta 1.4 header hook
+     * @param $params
+     */
+    public function hookHeader($params)
+    {
+        return MtPayment_1_4::renderHeader();
     }
 
     /**
@@ -315,7 +356,11 @@ class MTPayment extends PaymentModule
     {
         $this->assignTemplateAssets($this->smarty, $params['cart']);
 
-        return $this->display(__FILE__, 'payment.tpl');
+        if (_PS_VERSION_ < '1.5') {
+            return MtPayment_1_4::renderPayButton();
+        } else {
+            return $this->display(__FILE__, 'payment.tpl');
+        }
     }
 
     /**
