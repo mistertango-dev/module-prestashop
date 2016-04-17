@@ -60,8 +60,7 @@ class MTPayment extends PaymentModule
         if (_PS_VERSION_ < '1.5') {
             $hooks = array(
                 'header',
-                'payment',
-                'paymentReturn'
+                'payment'
             );
         } else {
             $hooks = array(

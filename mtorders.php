@@ -34,7 +34,11 @@ class MTOrders
 		$order_state->unremovable = 1;
 		$order_state->logable = 0;
 
-		$order_state->getFieldsLang();
+		if(_PS_VERSION_ < '1.5') {
+
+		} else {
+			$order_state->getFieldsLang();
+		}
 
 		$order_state->save();
 
