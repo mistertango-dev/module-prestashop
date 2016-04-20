@@ -50,16 +50,20 @@ class MTTransactions
 		);
 
 		if (!$exists) {
-			Db::getInstance()->insert(
-				'mttransactions',
-				array(
-					'id_transaction' => pSQL($id_transaction),
-					'id_order' => pSQL((int) $id_order),
-					'websocket' => pSQL($websocket),
-					'amount' => pSQL((float) $amount),
-					'payment_date' => isset($date)?date('Y-m-d H:i:s', strtotime($date)):null
-				)
+			$table = 'mttransactions';
+			$values = array(
+				'id_transaction' => pSQL($id_transaction),
+				'id_order' => pSQL((int) $id_order),
+				'websocket' => pSQL($websocket),
+				'amount' => pSQL((float) $amount),
+				'payment_date' => isset($date)?date('Y-m-d H:i:s', strtotime($date)):null
 			);
+
+			if (_PS_VERSION_ < '1.5') {
+				Db::getInstance()->autoExecute(_DB_PREFIX_.$table, $values, 'INSERT');
+			} else {
+				Db::getInstance()->insert($table, $values);
+			}
 		}
 	}
 
@@ -75,13 +79,17 @@ class MTTransactions
 		);
 
 		if ($exists) {
-			Db::getInstance()->update(
-				'mttransactions',
-				array(
-					'id_order' => pSQL((int) $id_order),
-				),
-				'id_transaction=\''.pSQL($id_transaction).'\''
+			$table = 'mttransactions';
+			$values = 	array(
+				'id_order' => pSQL((int) $id_order)
 			);
+			$where = 'id_transaction=\''.pSQL($id_transaction).'\'';
+
+			if (_PS_VERSION_ < '1.5') {
+				Db::getInstance()->autoExecute(_DB_PREFIX_.$table, $values, 'UPDATE', $where);
+			} else {
+				Db::getInstance()->update($table, $values, $where);
+			}
 		}
 	}
 

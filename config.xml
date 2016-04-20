@@ -6,7 +6,7 @@
 	<description><![CDATA[Add MisterTango payment gateway to your shop.]]></description>
 	<author><![CDATA[MisterTango]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
-	<confirmUninstall><![CDATA[Are you sure you want to delete module with all logs &amp; details?]]></confirmUninstall>
+	<confirmUninstall><![CDATA[Are you sure you want to delete module with all logs and details?]]></confirmUninstall>
 	<is_configurable>1</is_configurable>
 	<need_instance>1</need_instance>
 	<limited_countries></limited_countries>

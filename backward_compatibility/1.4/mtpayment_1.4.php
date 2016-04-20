@@ -36,6 +36,7 @@ Class MtPayment_1_4 {
     }
 
     /**
+     * @param $controller
      * @return string
      */
     public static function getControllerLink ($controller)

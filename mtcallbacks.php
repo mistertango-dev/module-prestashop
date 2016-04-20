@@ -56,14 +56,18 @@ class MTCallbacks
      */
     public static function insert($callback, $id_transaction, $amount, $date = null)
     {
-        Db::getInstance()->insert(
-            'mtcallbacks',
-            array(
-                'callback' => pSQL($callback),
-                'id_transaction' => pSQL($id_transaction),
-                'amount' => pSQL($amount),
-                'callback_date' => isset($date)?date('Y-m-d H:i:s', strtotime($date)):null
-            )
+        $table = 'mtcallbacks';
+        $values = array(
+            'callback' => pSQL($callback),
+            'id_transaction' => pSQL($id_transaction),
+            'amount' => pSQL($amount),
+            'callback_date' => isset($date)?date('Y-m-d H:i:s', strtotime($date)):null
         );
+
+        if (_PS_VERSION_ < '1.5') {
+            Db::getInstance()->autoExecute(_DB_PREFIX_.$table, $values, 'INSERT');
+        } else {
+            Db::getInstance()->insert($table, $values);
+        }
     }
 }
