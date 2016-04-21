@@ -7,7 +7,7 @@
 <p class="payment_module">
   <a href="{$link->getModuleLink('mtpayment', 'confirm')|escape:'html'}" class="mtpayment" title="{l s='Internet banking' mod='mtpayment'}">
     <img src="/modules/mtpayment/views/img/payment.png" />
-    Internet banking
+    {l s='Internet banking' mod='mtpayment'}
   </a>
 </p>
 {else}
