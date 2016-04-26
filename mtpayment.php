@@ -32,7 +32,7 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->tab = 'payments_gateways';
-        $this->version = '1.1.7';
+        $this->version = '1.1.8';
         $this->author = 'MisterTango';
         $this->is_eu_compatible = 1;
 
@@ -167,6 +167,7 @@ class MTPayment extends PaymentModule
             MTConfiguration::updateUsername(Tools::getValue(MTConfiguration::NAME_USERNAME));
             MTConfiguration::updateSecretKey(Tools::getValue(MTConfiguration::NAME_SECRET_KEY));
             MTConfiguration::updateEnabledConfirmPage(Tools::getValue(MTConfiguration::NAME_ENABLED_CONFIRM_PAGE));
+            MTConfiguration::updateEnabledSuccessPage(Tools::getValue(MTConfiguration::NAME_ENABLED_SUCCESS_PAGE));
         }
 
         return $this->displayConfirmation($this->l('Settings updated'));
@@ -200,6 +201,26 @@ class MTPayment extends PaymentModule
                         'type' => 'select',
                         'label' => $this->l('Enable standard mode'),
                         'name' => MTConfiguration::NAME_ENABLED_CONFIRM_PAGE,
+                        'required' => true,
+                        'options' => array(
+                            'query' => array(
+                                array(
+                                    'id_option' => 0,
+                                    'name' => $this->l('No')
+                                ),
+                                array(
+                                    'id_option' => 1,
+                                    'name' => $this->l('Yes')
+                                ),
+                            ),
+                            'id' => 'id_option',
+                            'name' => 'name'
+                        )
+                    ),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Enable success page'),
+                        'name' => MTConfiguration::NAME_ENABLED_SUCCESS_PAGE,
                         'required' => true,
                         'options' => array(
                             'query' => array(
@@ -270,6 +291,10 @@ class MTPayment extends PaymentModule
                 MTConfiguration::NAME_ENABLED_CONFIRM_PAGE,
                 (int)MTConfiguration::isEnabledConfirmPage()
             ),
+            MTConfiguration::NAME_ENABLED_SUCCESS_PAGE => Tools::getValue(
+                MTConfiguration::NAME_ENABLED_SUCCESS_PAGE,
+                (int)MTConfiguration::isEnabledSuccessPage()
+            ),
         );
     }
 
@@ -283,9 +308,13 @@ class MTPayment extends PaymentModule
 
         $this->context->controller->addJS($this->_path . 'views/js/mtpayment.js');
 
+        $cart = $this->context->cart;
+        $customer = new Customer($cart->id_customer);
+
         $this->smarty->assign(array(
             'mtpayment_username' => MTConfiguration::getUsername(),
             'mtpayment_enabled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
+            'mtpayment_enabled_success_page' => MTConfiguration::isEnabledSuccessPage(),
             'mtpayment_url_validate_order' => Context::getContext()->link->getModuleLink(
                 'mtpayment',
                 'validate-order'
@@ -297,6 +326,17 @@ class MTPayment extends PaymentModule
             'mtpayment_url_order_states' => Context::getContext()->link->getModuleLink(
                 'mtpayment',
                 'order-states'
+            ),
+            'mtpayment_url_success_page' => Context::getContext()->link->getPageLink(
+                'order-confirmation',
+                null,
+                null,
+                array(
+                    'id_cart' => $cart->id,
+                    'id_module' => $this->id,
+                    'id_order' => $this->currentOrder,
+                    'key' => $customer->secure_key,
+                )
             ),
         ));
 
@@ -371,25 +411,14 @@ class MTPayment extends PaymentModule
             return;
         }
 
-        switch ($params['objOrder']->getCurrentState()) {
-            case _PS_OS_PAYMENT_:
-                $this->smarty->assign('status', 'ok');
-                break;
-            case _PS_OS_OUTOFSTOCK_:
-                $this->smarty->assign('status', 'ok');
-                break;
-
-            case _PS_OS_BANKWIRE_:
-                $this->smarty->assign('status', 'pending');
-                break;
-
-            case _PS_OS_ERROR_:
-            default:
-                $this->smarty->assign('status', 'failed');
-                break;
+        $status = 'ok';
+        if ($params['objOrder']->getCurrentState() == _PS_OS_ERROR_) {
+            $status = 'failed';
         }
 
-        return $this->display(__FILE__, 'confirmation.tpl');
+        $this->smarty->assign('status', $status);
+
+        return $this->display(__FILE__, 'payment_return.tpl');
     }
 
     /**
@@ -404,6 +433,7 @@ class MTPayment extends PaymentModule
             'mtpayment_version' => $this->version,
             'mtpayment_path' => $this->_path,
             'enbaled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
+            'enbaled_success_page' => MTConfiguration::isEnabledSuccessPage(),
             'customer_email' => $this->getContextCustomer()->email,
             'transaction' => $cart->id . '_' . time(),
             'cart_currency_iso_code' => $currency->iso_code,

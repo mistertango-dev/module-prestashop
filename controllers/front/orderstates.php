@@ -40,6 +40,20 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
         }
 
         $cart = new Cart($order->id_cart);
+        $customer = new Customer($cart->id_customer);
+        if ($order->getCurrentState() == _PS_OS_PAYMENT_ && MTConfiguration::isEnabledSuccessPage()) {
+            Tools::redirect(Context::getContext()->link->getPageLink(
+                'order-confirmation',
+                null,
+                null,
+                array(
+                    'id_cart' => $cart->id,
+                    'id_module' => $this->module->id,
+                    'id_order' => $order->id,
+                    'key' => $customer->secure_key,
+                )
+            ));
+        }
 
         MTPayment::getInstance()->assignTemplateAssets($this->context->smarty, $cart);
         $this->context->controller->addJS(_MODULE_DIR_ . $this->module->name . '/views/js/order-states.js');
@@ -67,6 +81,7 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
 
         if (Validate::isLoadedObject($order)) {
             $cart = new Cart($order->id_cart);
+            $customer = new Customer($cart->id_customer);
 
             MTPayment::getInstance()->assignTemplateAssets($this->context->smarty, $cart);
             $this->assignTemplateAssets($this->context->smarty, $order, $cart);
@@ -86,9 +101,25 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
                 $path_table_order_states = $path_themes_table_order_states;
             }
 
+            $redirect = false;
+            if ($order->getCurrentState() == _PS_OS_PAYMENT_ && MTConfiguration::isEnabledSuccessPage()) {
+                $redirect = Context::getContext()->link->getPageLink(
+                    'order-confirmation',
+                    null,
+                    null,
+                    array(
+                        'id_cart' => $cart->id,
+                        'id_module' => $this->module->id,
+                        'id_order' => $order->id,
+                        'key' => $customer->secure_key,
+                    )
+                );
+            }
+
             die(Tools::jsonEncode(array(
                 'success' => true,
                 'html' => $this->context->smarty->fetch($path_table_order_states),
+                'redirect' => $redirect,
             )));
         }
 

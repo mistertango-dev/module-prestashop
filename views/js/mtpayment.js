@@ -3,6 +3,7 @@ MTPayment = {
     success: false,
     order: null,
     disallowDifferentPayment: false,
+    isOfflinePayment: false,
     transaction: null,
     customerEmail: null,
     amount: null,
@@ -59,6 +60,7 @@ MTPayment = {
     },
     onOfflinePayment: function (response) {
         mrTangoCollect.onSuccess = function () {};
+        MTPayment.isOfflinePayment = true;
         MTPayment.onSuccess(response);
     },
     onSuccess: function (response) {
@@ -100,7 +102,15 @@ MTPayment = {
         }
     },
     afterSuccess: function () {
-        var operator = MTPAYMENT_URL_ORDER_STATES.indexOf('?') === -1?'?':'&';
+        var operator = '?';
+
+        if (!MTPayment.isOfflinePayment && MTPAYMENT_ENABLED_SUCCESS_PAGE) {
+            operator = MTPAYMENT_URL_SUCCESS_PAGE.indexOf('?') === -1?'?':'&';
+            window.location.href = MTPAYMENT_URL_SUCCESS_PAGE + operator + 'id_order=' + MTPayment.order;
+            return;
+        }
+
+        operator = MTPAYMENT_URL_ORDER_STATES.indexOf('?') === -1?'?':'&';
         window.location.href = MTPAYMENT_URL_ORDER_STATES + operator + 'order=' + MTPayment.order;
     }
 };

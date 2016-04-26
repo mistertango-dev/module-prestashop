@@ -26,6 +26,10 @@ Class MtPayment_1_4 {
             'enable_confirm_page' => array(
                 'name' => MTConfiguration::NAME_ENABLED_CONFIRM_PAGE,
                 'value' => MTConfiguration::isEnabledConfirmPage()
+            ),
+            'enable_success_page' => array(
+                'name' => MTConfiguration::NAME_ENABLED_SUCCESS_PAGE,
+                'value' => MTConfiguration::isEnabledSuccessPage()
             )
         );
 
@@ -71,6 +75,7 @@ Class MtPayment_1_4 {
         $module->smarty->assign(array(
             'mtpayment_username' => MTConfiguration::getUsername(),
             'mtpayment_enabled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
+            'mtpayment_enabled_success_page' => MTConfiguration::isEnabledSuccessPage(),
             'mtpayment_url_validate_order' => self::getControllerLink('validate-order'),
             'mtpayment_url_validate_transaction' => self::getControllerLink('validate-transaction'),
             'mtpayment_url_order_states' =>  self::getControllerLink('order-states')

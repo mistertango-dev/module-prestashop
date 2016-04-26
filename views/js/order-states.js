@@ -22,7 +22,12 @@ MTPayment.OrderStates = {
                 if (MTPayment.disallowDifferentPayment) {
                     $('.jsAllowDifferentPayment').remove();
                 }
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                }
             }
+
         });
     }
 };

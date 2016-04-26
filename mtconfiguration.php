@@ -27,6 +27,11 @@ class MTConfiguration
     /**
      *
      */
+    const NAME_ENABLED_SUCCESS_PAGE = 'MT_ENABLED_SUCCESS_PAGE';
+
+    /**
+     *
+     */
     const NAME_OS_PENDING = 'MT_OS_PENDING';
 
     /**
@@ -68,7 +73,7 @@ class MTConfiguration
      */
     public static function isEnabledConfirmPage()
     {
-        return (bool)Configuration::get(self::NAME_ENABLED_CONFIRM_PAGE);
+        return (int)Configuration::get(self::NAME_ENABLED_CONFIRM_PAGE);
     }
 
     /**
@@ -78,6 +83,23 @@ class MTConfiguration
     public static function updateEnabledConfirmPage($value)
     {
         return Configuration::updateValue(self::NAME_ENABLED_CONFIRM_PAGE, $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function isEnabledSuccessPage()
+    {
+        return (int)Configuration::get(self::NAME_ENABLED_SUCCESS_PAGE);
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public static function updateEnabledSuccessPage($value)
+    {
+        return Configuration::updateValue(self::NAME_ENABLED_SUCCESS_PAGE, $value);
     }
 
     /**
