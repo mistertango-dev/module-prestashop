@@ -31,7 +31,7 @@ class MTPaymentValidateOrderModuleFrontController extends ModuleFrontController
         if (isset($id_order)) {
             die(Tools::jsonEncode(array(
                 'success' => true,
-                'order' => MTPayment::getInstance()->currentOrder
+                'order' => $id_order
             )));
         }
 

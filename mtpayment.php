@@ -32,7 +32,7 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->tab = 'payments_gateways';
-        $this->version = '1.1.9';
+        $this->version = '1.1.10';
         $this->author = 'MisterTango';
         $this->is_eu_compatible = 1;
 
@@ -304,9 +304,9 @@ class MTPayment extends PaymentModule
      */
     public function hookDisplayHeader($params)
     {
-        $this->context->controller->addCSS($this->_path . 'views/css/mtpayment.css');
+        $this->context->controller->addCSS($this->_path . 'views/css/mtpayment.css?v=1.1.10');
 
-        $this->context->controller->addJS($this->_path . 'views/js/mtpayment.js');
+        $this->context->controller->addJS($this->_path . 'views/js/mtpayment.js?v=1.1.10');
 
         $cart = $this->context->cart;
         $customer = new Customer($cart->id_customer);
