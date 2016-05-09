@@ -86,16 +86,32 @@ class MTOrders
 
             if (Validate::isLoadedObject($cart) && !$cart->OrderExists()) {
                 // We simulate that the payment was made, because of retarded prestashop logic
-                MTPayment::getInstance()->validateOrder(
-                    (int) $id_cart,
-                    (int) Configuration::get(MTConfiguration::NAME_OS_PENDING),
-                    $amount,
-                    MTPayment::getInstance()->displayName,
-                    '',
-                    array(),
-                    null,
-                    true
-                );
+                if(_PS_VERSION_ < '1.5') {
+                    MTPayment::getInstance()->validateOrder(
+                        (int) $id_cart,
+                        (int) Configuration::get(MTConfiguration::NAME_OS_PENDING),
+                        $amount,
+                        MTPayment::getInstance()->displayName,
+                        '',
+                        array(),
+                        null,
+                        true
+                    );
+                } else {
+                    $customer = new Customer($cart->id_customer);
+                    MTPayment::getInstance()->validateOrder(
+                        (int) $id_cart,
+                        (int) Configuration::get(MTConfiguration::NAME_OS_PENDING),
+                        $amount,
+                        MTPayment::getInstance()->displayName,
+                        '',
+                        array(),
+                        null,
+                        true,
+                        $customer->secure_key
+                    );
+                }
+
             }
 
             $id_order = Order::getOrderByCartId($id_cart);
