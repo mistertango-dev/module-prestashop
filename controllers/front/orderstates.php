@@ -33,7 +33,7 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             Tools::redirect('index.php?controller=order&step=1');
         }
 
-        $order = new Order(Tools::getValue('order'));
+        $order = new Order(Tools::getValue('id_order'));
 
         if (!Validate::isLoadedObject($order)) {
             die($this->module->l('Order is invalid.', 'mtpayment'));

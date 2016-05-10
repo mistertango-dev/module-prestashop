@@ -32,7 +32,7 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->tab = 'payments_gateways';
-        $this->version = '1.1.10';
+        $this->version = '1.2.0';
         $this->author = 'MisterTango';
         $this->is_eu_compatible = 1;
 
@@ -60,7 +60,8 @@ class MTPayment extends PaymentModule
         if (_PS_VERSION_ < '1.5') {
             $hooks = array(
                 'header',
-                'payment'
+                'payment',
+                'paymentReturn'
             );
         } else {
             $hooks = array(
@@ -125,6 +126,14 @@ class MTPayment extends PaymentModule
         }
 
         return self::$instance;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -308,9 +317,6 @@ class MTPayment extends PaymentModule
 
         $this->context->controller->addJS($this->_path . 'views/js/mtpayment.js');
 
-        $cart = $this->context->cart;
-        $customer = new Customer($cart->id_customer);
-
         $this->smarty->assign(array(
             'mtpayment_username' => MTConfiguration::getUsername(),
             'mtpayment_enabled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
@@ -326,17 +332,6 @@ class MTPayment extends PaymentModule
             'mtpayment_url_order_states' => Context::getContext()->link->getModuleLink(
                 'mtpayment',
                 'order-states'
-            ),
-            'mtpayment_url_success_page' => Context::getContext()->link->getPageLink(
-                'order-confirmation',
-                null,
-                null,
-                array(
-                    'id_cart' => $cart->id,
-                    'id_module' => $this->id,
-                    'id_order' => $this->currentOrder,
-                    'key' => $customer->secure_key,
-                )
             ),
         ));
 
@@ -418,7 +413,11 @@ class MTPayment extends PaymentModule
 
         $this->smarty->assign('status', $status);
 
-        return $this->display(__FILE__, 'payment_return.tpl');
+        if (_PS_VERSION_ < '1.5') {
+            return $this->display(__FILE__, 'backward_compatibility/1.4/views/templates/hook/payment_return.tpl');
+        } else {
+            return $this->display(__FILE__, 'payment_return.tpl');
+        }
     }
 
     /**
