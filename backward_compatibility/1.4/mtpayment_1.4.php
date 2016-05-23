@@ -1,9 +1,15 @@
 <?php
+
+if (!defined('_PS_VERSION_'))
+    exit;
+
+require_once(_PS_MODULE_DIR_ . 'mtpayment/mtpayment.php');
+
 /**
  * Presta 1.4 compatibility
  */
 
-Class MtPayment_1_4 {
+class MtPayment_1_4 {
     const VIEWS_PATH =  'backward_compatibility/1.4/views';
 
     /**
@@ -36,7 +42,9 @@ Class MtPayment_1_4 {
         $smarty->assign('views_path', '/modules/mtpayment/backward_compatibility/1.4/views');
         $smarty->assign('fields', $fields);
 
-        return $module->display('../mtpayment.php', self::VIEWS_PATH . '/templates/back/settings.tpl');
+	die($module->display('mtpayment.php', self::VIEWS_PATH . '/templates/back/settings.tpl'));
+
+        return $module->display('mtpayment.php', self::VIEWS_PATH . '/templates/back/settings.tpl');
     }
 
     /**
@@ -58,7 +66,7 @@ Class MtPayment_1_4 {
 
         $module->smarty->assign('confirm_link', self::getControllerLink('confirm'));
 
-        return $module->display('../mtpayment.php', self::VIEWS_PATH . '/templates/hook/payment.tpl');
+        return $module->display('mtpayment.php', self::VIEWS_PATH . '/templates/hook/payment.tpl');
     }
 
     /**
@@ -70,7 +78,7 @@ Class MtPayment_1_4 {
 
         $module->context->controller->addCSS('/modules/mtpayment/backward_compatibility/1.4/views/css/mtpayment.css');
 
-        $module->context->controller->addJS('/modules/mtpayment/views/js/mtpayment.js');
+        $module->context->controller->addJS('/modules/mtpayment/backward_compatibility/1.4/views/js/mtpayment.js');
 
         $module->smarty->assign(array(
             'mtpayment_username' => MTConfiguration::getUsername(),
@@ -81,6 +89,6 @@ Class MtPayment_1_4 {
             'mtpayment_url_order_states' =>  self::getControllerLink('order-states')
         ));
 
-        return $module->display('../mtpayment.php', 'views/templates/hook/header.tpl');
+        return $module->display('mtpayment.php', 'views/templates/hook/header.tpl');
     }
 }

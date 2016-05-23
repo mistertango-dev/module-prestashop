@@ -17,8 +17,8 @@
     <label for="mt_enable_confirm_page">{l s='Enable standard mode' mod='mtpayment'}</label>
     <div class="margin-form">
       <select id="mt_enable_confirm_page" name="{$fields.enable_confirm_page.name}">
-        <option {if !$fields.enable_confirm_page.value }selected{/if} value="0">No</option>
-        <option {if $fields.enable_confirm_page.value }selected{/if} value="1">Yes</option>
+        <option {if not $fields.enable_confirm_page.value == 0}selected{/if} value="0">No</option>
+        <option {if $fields.enable_confirm_page.value == 1}selected{/if} value="1">Yes</option>
       </select>
       <sup>*</sup>
     </div>
@@ -26,8 +26,8 @@
     <label for="mt_enable_success_page">{l s='Enable success page' mod='mtpayment'}</label>
     <div class="margin-form">
       <select id="mt_enable_success_page" name="{$fields.enable_success_page.name}">
-        <option {if !$fields.enable_success_page.value }selected{/if} value="0">No</option>
-        <option {if $fields.enable_success_page.value }selected{/if} value="1">Yes</option>
+        <option {if $fields.enable_success_page.value == 0}selected{/if} value="0">No</option>
+        <option {if $fields.enable_success_page.value == 1}selected{/if} value="1">Yes</option>
       </select>
       <sup>*</sup>
     </div>
