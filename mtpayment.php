@@ -32,7 +32,7 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->tab = 'payments_gateways';
-        $this->version = '1.2.1';
+        $this->version = '1.2.2';
         $this->author = 'MisterTango';
         $this->is_eu_compatible = 1;
 
@@ -59,13 +59,11 @@ class MTPayment extends PaymentModule
     {
         if (_PS_VERSION_ < '1.5') {
             $hooks = array(
-                'header',
                 'payment',
                 'paymentReturn'
             );
         } else {
             $hooks = array(
-                'displayHeader',
                 'displayOrderStateInfo',
                 'payment',
                 'paymentReturn'
@@ -309,42 +307,22 @@ class MTPayment extends PaymentModule
 
     /**
      * Presta 1.5 header hook
+     * @deprecated and will be removed later
      * @param $params
      */
     public function hookDisplayHeader($params)
     {
-        $this->context->controller->addCSS($this->_path . 'views/css/mtpayment.css');
-
-        $this->context->controller->addJS($this->_path . 'views/js/mtpayment.js');
-
-        $this->smarty->assign(array(
-            'mtpayment_username' => MTConfiguration::getUsername(),
-            'mtpayment_enabled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
-            'mtpayment_enabled_success_page' => MTConfiguration::isEnabledSuccessPage(),
-            'mtpayment_url_validate_order' => Context::getContext()->link->getModuleLink(
-                'mtpayment',
-                'validate-order'
-            ),
-            'mtpayment_url_validate_transaction' => Context::getContext()->link->getModuleLink(
-                'mtpayment',
-                'validate-transaction'
-            ),
-            'mtpayment_url_order_states' => Context::getContext()->link->getModuleLink(
-                'mtpayment',
-                'order-states'
-            ),
-        ));
-
         return $this->display(__FILE__, 'header.tpl');
     }
 
     /**
      * Presta 1.4 header hook
+     * @deprecated and will be removed later
      * @param $params
      */
     public function hookHeader($params)
     {
-        return MtPayment_1_4::renderHeader();
+        return $this->display(__FILE__, 'header.tpl');
     }
 
     /**
@@ -426,9 +404,26 @@ class MTPayment extends PaymentModule
      */
     public function assignTemplateAssets($smarty, $cart)
     {
+        $this->context->controller->addCSS($this->_path . 'views/css/mtpayment.css');
+
         $currency = new Currency((int)$cart->id_currency);
 
         $smarty->assign(array(
+            'mtpayment_username' => MTConfiguration::getUsername(),
+            'mtpayment_enabled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
+            'mtpayment_enabled_success_page' => MTConfiguration::isEnabledSuccessPage(),
+            'mtpayment_url_validate_order' => $this->context->link->getModuleLink(
+                'mtpayment',
+                'validate-order'
+            ),
+            'mtpayment_url_validate_transaction' => $this->context->link->getModuleLink(
+                'mtpayment',
+                'validate-transaction'
+            ),
+            'mtpayment_url_order_states' => $this->context->link->getModuleLink(
+                'mtpayment',
+                'order-states'
+            ),
             'mtpayment_version' => $this->version,
             'mtpayment_path' => $this->_path,
             'enbaled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),

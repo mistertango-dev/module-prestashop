@@ -19,6 +19,7 @@
   {include file="./order-states-table.tpl"}
 </div>
 
+{include file="modules/mtpayment/views/templates/scripts.tpl"}
 <script type="text/javascript">
   var MTPAYMENT_ORDER_ID = "{$order->id|escape:'htmlall':'UTF-8'}";
 </script>

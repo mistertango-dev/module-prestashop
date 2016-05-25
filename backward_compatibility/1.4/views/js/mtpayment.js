@@ -22,7 +22,7 @@ MTPayment = {
         MTPayment.initButtonPay();
     },
     initButtonPay: function () {
-        $(document).on('click', '.mtpayment-submit', function (e) {
+        $(document).delegate('.mtpayment-submit', 'click', function (e) {
             if (e.isDefaultPrevented()) {
                 return;
             }

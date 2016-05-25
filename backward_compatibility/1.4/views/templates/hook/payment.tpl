@@ -18,4 +18,5 @@
 			{l s='Pay with MisterTango' mod='mtpayment'}
 		</a>
 	</p>
+  {include file="modules/mtpayment/views/templates/scripts.tpl"}
 {/if}

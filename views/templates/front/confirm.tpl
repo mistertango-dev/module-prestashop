@@ -47,6 +47,7 @@
   </table>
 </div>
 
+{include file="modules/mtpayment/views/templates/scripts.tpl"}
 <script type="text/javascript">
   $(window).load(function () { $('.mtpayment-submit').eq(0).trigger('click'); })
 </script>

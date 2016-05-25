@@ -68,27 +68,4 @@ class MtPayment_1_4 {
 
         return $module->display('mtpayment.php', self::VIEWS_PATH . '/templates/hook/payment.tpl');
     }
-
-    /**
-     * @return string
-     */
-    public static function renderHeader()
-    {
-        $module = MTPayment::getInstance();
-
-        $module->context->controller->addCSS('/modules/mtpayment/backward_compatibility/1.4/views/css/mtpayment.css');
-
-        $module->context->controller->addJS('/modules/mtpayment/backward_compatibility/1.4/views/js/mtpayment.js');
-
-        $module->smarty->assign(array(
-            'mtpayment_username' => MTConfiguration::getUsername(),
-            'mtpayment_enabled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
-            'mtpayment_enabled_success_page' => MTConfiguration::isEnabledSuccessPage(),
-            'mtpayment_url_validate_order' => self::getControllerLink('validate-order'),
-            'mtpayment_url_validate_transaction' => self::getControllerLink('validate-transaction'),
-            'mtpayment_url_order_states' =>  self::getControllerLink('order-states')
-        ));
-
-        return $module->display('mtpayment.php', 'views/templates/hook/header.tpl');
-    }
 }
