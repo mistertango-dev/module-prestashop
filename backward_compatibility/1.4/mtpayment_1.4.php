@@ -78,7 +78,9 @@ class MtPayment_1_4 {
 
         $module->context->controller->addCSS('/modules/mtpayment/backward_compatibility/1.4/views/css/mtpayment.css');
 
-        $module->context->controller->addJS('/modules/mtpayment/backward_compatibility/1.4/views/js/mtpayment.js');
+        if (isset($module->context->smarty->tpl_vars['page_name']->value) && $module->context->smarty->tpl_vars['page_name']->value == 'order') {
+            $module->context->controller->addJS('/modules/mtpayment/views/js/mtpayment.js');
+        }
 
         $module->smarty->assign(array(
             'mtpayment_username' => MTConfiguration::getUsername(),

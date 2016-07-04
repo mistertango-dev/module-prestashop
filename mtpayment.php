@@ -41,7 +41,7 @@ class MTPayment extends PaymentModule
         $this->page = basename(__FILE__, '.php');
         $this->displayName = $this->l('MisterTango Payment');
         $this->description = $this->l('Add MisterTango payment gateway to your shop.');
-        $this->confirmUninstall = $this->l('Are you sure you want to delete module with all logs & details?');
+        $this->confirmUninstall = $this->l('Are you sure you want to delete module with all logs and details?');
 
         /* Backward compatibility */
         if (_PS_VERSION_ < '1.5') {
@@ -315,7 +315,9 @@ class MTPayment extends PaymentModule
     {
         $this->context->controller->addCSS($this->_path . 'views/css/mtpayment.css');
 
-        $this->context->controller->addJS($this->_path . 'views/js/mtpayment.js');
+        if (isset($this->context->smarty->tpl_vars['page_name']->value) && $this->context->smarty->tpl_vars['page_name']->value == 'order') {
+            $this->context->controller->addJS($this->_path . 'views/js/mtpayment.js');
+        }
 
         $this->smarty->assign(array(
             'mtpayment_username' => MTConfiguration::getUsername(),
