@@ -22,6 +22,7 @@
     {l s='Checkout' mod='mtpayment'} {convertPrice price=$amount}
   </a>
 </p>
+{include file="modules/mtpayment/views/templates/scripts.tpl"}
 {/if}
 
 {if version_compare($smarty.const._PS_VERSION_, '1.6', '>')}

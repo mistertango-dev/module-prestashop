@@ -17,3 +17,5 @@
 <div class="table_block">
   {include file="./table_order_states.tpl"}
 </div>
+
+{include file="modules/mtpayment/views/templates/scripts.tpl"}
