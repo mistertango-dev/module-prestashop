@@ -59,7 +59,8 @@ MTPayment = {
         MTPayment.isOpen = true;
     },
     onOfflinePayment: function (response) {
-        mrTangoCollect.onSuccess = function () {};
+        mrTangoCollect.onSuccess = function () {
+        };
         MTPayment.isOfflinePayment = true;
         MTPayment.onSuccess(response);
     },
@@ -68,19 +69,18 @@ MTPayment = {
             type: 'GET',
             async: true,
             dataType: 'json',
-            url: MTPayment.order?MTPAYMENT_URL_VALIDATE_TRANSACTION:MTPAYMENT_URL_VALIDATE_ORDER,
+            url: MTPayment.order ? MTPAYMENT_URL_VALIDATE_TRANSACTION : MTPAYMENT_URL_VALIDATE_ORDER,
             headers: {
                 'cache-control': 'no-cache'
             },
             cache: false,
             data: {
-                order: MTPayment.order?MTPayment.order:null,
+                order: MTPayment.order ? MTPayment.order : null,
                 transaction: MTPayment.transaction,
                 websocket: mrTangoCollect.ws_id,
                 amount: MTPayment.amount
             },
-            success: function(data)
-            {
+            success: function (data) {
                 if (data.success) {
                     $('.jsAllowDifferentPayment').remove();
                     MTPayment.disallowDifferentPayment = true;
@@ -108,11 +108,21 @@ MTPayment = {
             url = MTPayment.urlSuccessPage;
         }
 
-        var operator = url.indexOf('?') === -1?'?':'&';
+        var operator = url.indexOf('?') === -1 ? '?' : '&';
         window.location.href = url + operator + 'id_order=' + MTPayment.order;
     }
 };
 
-$.getScript(MTPAYMENT_URL_SCRIPT, function (data, textStatus, jqxhr) {
-    MTPayment.init();
-});
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+        $.getScript(MTPAYMENT_URL_SCRIPT, function (data, textStatus, jqxhr) {
+            MTPayment.init();
+        });
+    },
+    false
+);
+
+
+
+
