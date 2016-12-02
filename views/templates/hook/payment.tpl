@@ -3,7 +3,7 @@
   <div class="col-xs-12">
 {/if}
 
-{if $enbaled_confirm_page == true}
+{if $enabled_confirm_page == true}
 <p class="payment_module">
   <a href="{$link->getModuleLink('mtpayment', 'confirm')|escape:'html'}" class="mtpayment" title="{l s='Internet banking' mod='mtpayment'}">
     <img src="/modules/mtpayment/views/img/payment.png" />
