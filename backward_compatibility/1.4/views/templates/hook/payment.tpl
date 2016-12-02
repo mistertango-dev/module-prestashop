@@ -17,6 +17,6 @@
 			<img src="/modules/mtpayment/backward_compatibility/1.4/views/img/payment.png">
 			{l s='Pay with MisterTango' mod='mtpayment'}
 		</a>
+		{include file="modules/mtpayment/views/templates/scripts.tpl"}
 	</p>
-  {include file="modules/mtpayment/views/templates/scripts.tpl"}
 {/if}

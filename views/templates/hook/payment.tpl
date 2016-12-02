@@ -21,8 +21,8 @@
      data-transaction="{$transaction|escape:'htmlall':'UTF-8'}">
     {l s='Checkout' mod='mtpayment'} {convertPrice price=$amount}
   </a>
+  {include file="modules/mtpayment/views/templates/scripts.tpl"}
 </p>
-{include file="modules/mtpayment/views/templates/scripts.tpl"}
 {/if}
 
 {if version_compare($smarty.const._PS_VERSION_, '1.6', '>')}
