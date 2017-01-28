@@ -56,7 +56,6 @@ class MTPayment extends PaymentModule
     public function install()
     {
         $hooks = array(
-            'payment',
             'paymentReturn',
             'paymentOptions',
         );
@@ -344,18 +343,6 @@ class MTPayment extends PaymentModule
         ));
 
         return $this->fetch(__FILE__, 'order-state-info.tpl');
-    }
-
-    /**
-     * @param $params
-     *
-     * @return mixed
-     */
-    public function hookPayment($params)
-    {
-        $this->assignTemplateAssets($this->smarty, $params['cart']);
-
-        return $this->fetch(__FILE__, 'payment.tpl');
     }
 
     /**
