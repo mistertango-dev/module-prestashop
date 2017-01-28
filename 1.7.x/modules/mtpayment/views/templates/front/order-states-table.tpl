@@ -1,8 +1,8 @@
 <table id="mtpayment-order-states-table" class="table table-bordered">
   <thead>
   <tr>
-    <th width="20%">{l s='Date' d='Modules.MTPayment.Shop'}</th>
-    <th width="80%">{l s='Status' d='Modules.MTPayment.Shop'}</th>
+    <th width="20%">{l s='Date' mod='mtpayment'}</th>
+    <th width="80%">{l s='Status' mod='mtpayment'}</th>
   </tr>
   </thead>
   <tbody>
@@ -20,7 +20,7 @@
       </p>
       {if $row['id_order_state'] == $id_order_state_pending && $allow_different_payment}
       <p class="jsAllowDifferentPayment">
-        {l s='Check your email, we sent you an invoice. If you wish to use other methods for payment' d='Modules.MTPayment.Shop'} -
+        {l s='Check your email, we sent you an invoice. If you wish to use other methods for payment' mod='mtpayment'} -
         <a href="#"
            class="mtpayment-submit"
            data-websocket="{$websocket|escape:'htmlall':'UTF-8'}"
@@ -30,7 +30,7 @@
            data-amount="{$amount|escape:'htmlall':'UTF-8'}"
            data-currency="{$cart_currency_iso_code|escape:'htmlall':'UTF-8'}"
            data-transaction="{$transaction|escape:'htmlall':'UTF-8'}">
-          {l s='click here' d='Modules.MTPayment.Shop'}
+          {l s='click here' mod='mtpayment'}
         </a>
       </p>
       {/if}
@@ -49,9 +49,9 @@
       </p>
       {if $row['id_order_state'] == $id_order_state_pending && $allow_different_payment}
       <p class="jsAllowDifferentPayment">
-        {l s='Check your email, we sent you an invoice. If you wish to use other methods for payment' d='Modules.MTPayment.Shop'} -
+        {l s='Check your email, we sent you an invoice. If you wish to use other methods for payment' mod='mtpayment'} -
         <a href="#" class="mtpayment-submit" data-ws-id="{$transaction.id_websocket|escape:'htmlall':'UTF-8'}">
-          {l s='click here' d='Modules.MTPayment.Shop'}
+          {l s='click here' mod='mtpayment'}
         </a>
       </p>
       {/if}

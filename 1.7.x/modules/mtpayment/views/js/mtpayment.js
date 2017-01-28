@@ -10,6 +10,8 @@ MTPayment = {
     amount: null,
     currency: null,
     language: null,
+    onLoadedButtonPay: function () {
+    },
     init: function () {
         mrTangoCollect.set.recipient(MTPAYMENT_USERNAME);
 
@@ -54,6 +56,8 @@ MTPayment = {
 
             return false;
         });
+
+        MTPayment.onLoadedButtonPay();
     },
     onOpen: function () {
         MTPayment.isOpen = true;
@@ -114,7 +118,7 @@ MTPayment = {
 };
 
 document.addEventListener(
-    "DOMContentLoaded",
+    'DOMContentLoaded',
     function () {
         $.getScript(MTPAYMENT_URL_SCRIPT, function (data, textStatus, jqxhr) {
             MTPayment.init();

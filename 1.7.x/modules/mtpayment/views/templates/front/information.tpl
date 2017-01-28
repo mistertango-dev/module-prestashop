@@ -8,7 +8,7 @@
   <div class="row">
     <div class="col-xs-12">
       <h1>
-        {l s='Payment information' d='Modules.MTPayment.Shop'}
+        {l s='Payment information' mod='mtpayment'}
       </h1>
       {include file="./table_order_states.tpl"}
     </div>

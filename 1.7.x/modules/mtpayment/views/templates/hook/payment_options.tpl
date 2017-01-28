@@ -1,5 +1,5 @@
 <section>
   <p>
-    {l s='You pay for the merchandise via MisterTango' d='Modules.MTPayment.Shop'}
+    {l s='You pay for the merchandise via MisterTango' mod='mtpayment'}
   </p>
 </section>

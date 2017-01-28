@@ -22,11 +22,6 @@ class MTConfiguration
     /**
      *
      */
-    const NAME_ENABLED_CONFIRM_PAGE = 'MT_ENABLED_CONFIRM_PAGE';
-
-    /**
-     *
-     */
     const NAME_ENABLED_SUCCESS_PAGE = 'MT_ENABLED_SUCCESS_PAGE';
 
     /**
@@ -66,23 +61,6 @@ class MTConfiguration
     public static function updateSecretKey($value)
     {
         return Configuration::updateValue(self::NAME_SECRET_KEY, $value);
-    }
-
-    /**
-     * @return mixed
-     */
-    public static function isEnabledConfirmPage()
-    {
-        return (int)Configuration::get(self::NAME_ENABLED_CONFIRM_PAGE);
-    }
-
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public static function updateEnabledConfirmPage($value)
-    {
-        return Configuration::updateValue(self::NAME_ENABLED_CONFIRM_PAGE, $value);
     }
 
     /**

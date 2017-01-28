@@ -6,31 +6,31 @@ require_once(dirname(__FILE__) . '/mtpayment.php');
 
 $hash = Tools::getValue('hash');
 
-$hash = true;
+//$hash = true;
 
 if ($hash !== false) {
     $data = Tools::jsonDecode(MTTools::decrypt($hash, Configuration::get(MTConfiguration::NAME_SECRET_KEY)));
 
-    $data = new stdClass();
+    /*$data = new stdClass();
     $data->callback_uuid = uniqid();
     $data->custom = new stdClass();
-    $data->custom->description = '6_1485441404';
+    $data->custom->description = '';
     $data->custom->data = new stdClass();
-    $data->custom->data->amount = '31.45';
+    $data->custom->data->amount = '';*/
 
-    /*if (isset($data)) {
+    if (isset($data)) {
         $data->custom = isset($data->custom) ? Tools::jsonDecode($data->custom) : null;
     }
 
     if (!isset($data->custom) && !isset($data->custom->description)) {
-        die();
-    }*/
+        die('Error occurred: Data is not set or transaction ID is not present');
+    }
 
     $message = '';
     $transaction = explode('_', $data->custom->description);
 
     if (count($transaction) != 2) {
-        die();
+        die('Error occurred: Transaction ID is corrupted');
     }
 
     if (MTCallbacks::exists($data->callback_uuid)) {
@@ -48,7 +48,7 @@ if ($hash !== false) {
             $data->custom->data->amount
         );
     } catch (Exception $e) {
-        die();
+        die('Error occurred: ' . $e->getMessage());
     }
 
     if ($success) {
@@ -57,4 +57,4 @@ if ($hash !== false) {
     }
 }
 
-die();
+die('Error occurred: Hash is empty');

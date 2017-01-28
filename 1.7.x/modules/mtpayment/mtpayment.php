@@ -42,6 +42,7 @@ class MTPayment extends PaymentModule
         $this->is_eu_compatible = 1;
         $this->currencies = false;
 
+        $this->bootstrap = true;
         parent::__construct();
 
         $this->displayName = $this->trans('Payments via MisterTango', array(), 'Modules.MTPayment.Admin');
@@ -131,9 +132,7 @@ class MTPayment extends PaymentModule
     {
         $this->postProcess();
 
-        $this->_html = $this->renderForm();
-
-        return $this->_html;
+        return $this->renderForm();
     }
 
     /**
@@ -159,7 +158,6 @@ class MTPayment extends PaymentModule
         if (Tools::isSubmit('btnSubmit')) {
             MTConfiguration::updateUsername(Tools::getValue(MTConfiguration::NAME_USERNAME));
             MTConfiguration::updateSecretKey(Tools::getValue(MTConfiguration::NAME_SECRET_KEY));
-            MTConfiguration::updateEnabledConfirmPage(Tools::getValue(MTConfiguration::NAME_ENABLED_CONFIRM_PAGE));
             MTConfiguration::updateEnabledSuccessPage(Tools::getValue(MTConfiguration::NAME_ENABLED_SUCCESS_PAGE));
         }
 
@@ -174,7 +172,7 @@ class MTPayment extends PaymentModule
         $fields_form = array(
             'form' => array(
                 'legend' => array(
-                    'title' => $this->l('CONFIGURATION'),
+                    'title' => $this->getTranslator()->trans('Settings', array(), 'Admin.Global'),
                     'icon' => 'icon-cog',
                 ),
                 'input' => array(
@@ -189,26 +187,6 @@ class MTPayment extends PaymentModule
                         'label' => $this->l('Secret key'),
                         'name' => MTConfiguration::NAME_SECRET_KEY,
                         'required' => true,
-                    ),
-                    array(
-                        'type' => 'select',
-                        'label' => $this->l('Enable standard mode'),
-                        'name' => MTConfiguration::NAME_ENABLED_CONFIRM_PAGE,
-                        'required' => true,
-                        'options' => array(
-                            'query' => array(
-                                array(
-                                    'id_option' => 0,
-                                    'name' => $this->l('No')
-                                ),
-                                array(
-                                    'id_option' => 1,
-                                    'name' => $this->l('Yes')
-                                ),
-                            ),
-                            'id' => 'id_option',
-                            'name' => 'name'
-                        )
                     ),
                     array(
                         'type' => 'select',
@@ -279,10 +257,6 @@ class MTPayment extends PaymentModule
             MTConfiguration::NAME_SECRET_KEY => Tools::getValue(
                 MTConfiguration::NAME_SECRET_KEY,
                 MTConfiguration::getSecretKey()
-            ),
-            MTConfiguration::NAME_ENABLED_CONFIRM_PAGE => Tools::getValue(
-                MTConfiguration::NAME_ENABLED_CONFIRM_PAGE,
-                (int)MTConfiguration::isEnabledConfirmPage()
             ),
             MTConfiguration::NAME_ENABLED_SUCCESS_PAGE => Tools::getValue(
                 MTConfiguration::NAME_ENABLED_SUCCESS_PAGE,
@@ -397,7 +371,6 @@ class MTPayment extends PaymentModule
 
         $smarty->assign(array(
             'mtpayment_username' => MTConfiguration::getUsername(),
-            'mtpayment_enabled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
             'mtpayment_enabled_success_page' => MTConfiguration::isEnabledSuccessPage(),
             'mtpayment_url_validate_order' => $this->context->link->getModuleLink(
                 'mtpayment',
@@ -413,7 +386,6 @@ class MTPayment extends PaymentModule
             ),
             'mtpayment_version' => $this->version,
             'mtpayment_path' => $this->_path,
-            'enabled_confirm_page' => MTConfiguration::isEnabledConfirmPage(),
             'enabled_success_page' => MTConfiguration::isEnabledSuccessPage(),
             'customer_email' => $this->getContextCustomer()->email,
             'transaction' => $cart->id . '_' . time(),

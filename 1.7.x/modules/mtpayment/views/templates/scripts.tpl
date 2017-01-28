@@ -1,6 +1,5 @@
 <script type="text/javascript">
   var MTPAYMENT_USERNAME = "{$mtpayment_username}";
-  var MTPAYMENT_ENABLED_CONFIRM_PAGE = {$mtpayment_enabled_confirm_page};
   var MTPAYMENT_ENABLED_SUCCESS_PAGE = {$mtpayment_enabled_success_page};
   var MTPAYMENT_URL_VALIDATE_ORDER = "{$mtpayment_url_validate_order}";
   var MTPAYMENT_URL_VALIDATE_TRANSACTION = "{$mtpayment_url_validate_transaction}";
