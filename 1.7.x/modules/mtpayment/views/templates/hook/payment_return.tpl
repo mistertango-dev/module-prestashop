@@ -1,6 +1,6 @@
 {if $status == 'ok'}
 <p>
-  {l s='Your order on %s is complete.' sprintf=$shop_name mod='mtpayment'}
+  {l s='Your order on %s is complete.' sprintf=$shop mod='mtpayment'}
   <br/><br/>
   {l s='If you have questions, comments or concerns, please contact our' mod='mtpayment'}
   <a href="{$link->getPageLink('contact', true)|escape:'html'}">

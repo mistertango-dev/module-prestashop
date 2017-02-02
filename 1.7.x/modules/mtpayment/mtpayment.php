@@ -316,7 +316,7 @@ class MTPayment extends PaymentModule
             'allow_different_payment' => $allow_different_payment,
         ));
 
-        return $this->fetch(__FILE__, 'order-state-info.tpl');
+        return $this->fetch('module:mtpayment/views/templates/hook/order-state-info.tpl');
     }
 
     /**
@@ -329,13 +329,13 @@ class MTPayment extends PaymentModule
         }
 
         $status = 'ok';
-        if ($params['objOrder']->getCurrentState() == _PS_OS_ERROR_) {
+        if ($params['order']->getCurrentState() == _PS_OS_ERROR_) {
             $status = 'failed';
         }
 
         $this->smarty->assign('status', $status);
 
-        return $this->fetch(__FILE__, 'payment_return.tpl');
+        return $this->fetch('module:mtpayment/views/templates/hook/payment_return.tpl');
     }
 
     /**
