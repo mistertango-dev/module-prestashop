@@ -18,7 +18,7 @@ class MTOrders
         $order_state = new OrderState();
         $order_states_names = array();
 
-        require_once dirname(__FILE__).'/order_states.php';
+        require_once dirname(__FILE__) . '/order_states.php';
 
         foreach (Language::getLanguages(false) as $language) {
             $name =
@@ -34,7 +34,7 @@ class MTOrders
         $order_state->unremovable = 1;
         $order_state->logable = 0;
 
-        if(_PS_VERSION_ < '1.5') {
+        if (_PS_VERSION_ < '1.5') {
 
         } else {
             $order_state->getFieldsLang();
@@ -42,7 +42,7 @@ class MTOrders
 
         $order_state->save();
 
-        copy(dirname(__FILE__).'/logo.gif', _PS_IMG_DIR_.'os/'.$order_state->id.'.gif');
+        copy(dirname(__FILE__) . '/logo.gif', _PS_IMG_DIR_ . 'os/' . $order_state->id . '.gif');
 
         MTConfiguration::updateOsPending($order_state->id);
 
@@ -58,7 +58,7 @@ class MTOrders
 
         $order_state = new OrderState($id_order_state);
 
-        unlink(_PS_IMG_DIR_.'os/'.$order_state->id.'.gif');
+        unlink(_PS_IMG_DIR_ . 'os/' . $order_state->id . '.gif');
 
         $order_state->delete();
 
@@ -86,10 +86,10 @@ class MTOrders
 
             if (Validate::isLoadedObject($cart) && !$cart->OrderExists()) {
                 // We simulate that the payment was made, because of retarded prestashop logic
-                if(_PS_VERSION_ < '1.5') {
+                if (_PS_VERSION_ < '1.5') {
                     MTPayment::getInstance()->validateOrder(
-                        (int) $id_cart,
-                        (int) Configuration::get(MTConfiguration::NAME_OS_PENDING),
+                        (int)$id_cart,
+                        (int)Configuration::get(MTConfiguration::NAME_OS_PENDING),
                         $amount,
                         MTPayment::getInstance()->displayName,
                         '',
@@ -100,8 +100,8 @@ class MTOrders
                 } else {
                     $customer = new Customer($cart->id_customer);
                     MTPayment::getInstance()->validateOrder(
-                        (int) $id_cart,
-                        (int) Configuration::get(MTConfiguration::NAME_OS_PENDING),
+                        (int)$id_cart,
+                        (int)Configuration::get(MTConfiguration::NAME_OS_PENDING),
                         $amount,
                         MTPayment::getInstance()->displayName,
                         '',
@@ -145,6 +145,10 @@ class MTOrders
             return false;
         }
 
+        if (empty(Context::getContext()->link)) {
+            Context::getContext()->link = new Link();
+        }
+
         MTPayment::getInstance()->setContextCart(Order::getCartIdStatic($id_order));
         MTPayment::getInstance()->setContextCustomer(MTPayment::getInstance()->getContextCart()->id_customer);
 
@@ -170,15 +174,15 @@ class MTOrders
         }
 
         if (_PS_VERSION_ >= '1.5') {
-            $order->addOrderPayment((float) $amount, MTPayment::getInstance()->displayName, $id_transaction);
+            $order->addOrderPayment((float)$amount, MTPayment::getInstance()->displayName, $id_transaction);
         } else {
             $order->total_paid_real = $total_paid_real;
         }
         $order->save();
 
         $new_history = new OrderHistory();
-        $new_history->id_order = (int) $order->id;
-        $new_history->changeIdOrderState((int) $state, $order->id, true);
+        $new_history->id_order = (int)$order->id;
+        $new_history->changeIdOrderState((int)$state, $order->id, true);
         $new_history->addWithemail(true, array());
 
         return true;
