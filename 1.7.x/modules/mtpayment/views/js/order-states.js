@@ -19,9 +19,6 @@ MTPayment.OrderStates = {
             success: function(data)
             {
                 $('#mtpayment-order-states-table').replaceWith(data.html);
-                if (MTPayment.disallowDifferentPayment) {
-                    $('.jsAllowDifferentPayment').remove();
-                }
 
                 if (data.redirect) {
                     window.location.href = data.redirect;

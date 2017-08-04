@@ -18,22 +18,18 @@
           {$row.ostate_name|escape:'html':'UTF-8'}
         </span>
       </p>
-      {if $row['id_order_state'] == $id_order_state_pending && $allow_different_payment}
-      <p class="jsAllowDifferentPayment">
+      <p>
         {l s='Check your email, we sent you an invoice. If you wish to use other methods for payment' mod='mtpayment'} -
         <a href="#"
            class="mtpayment-submit"
-           data-websocket="{$websocket|escape:'htmlall':'UTF-8'}"
-           data-language="{$language['iso_code']|escape:'html':'UTF-8'}"
-           data-customer-email="{$customer_email}"
-           data-order="{$order->id|escape:'htmlall':'UTF-8'}"
-           data-amount="{$amount|escape:'htmlall':'UTF-8'}"
-           data-currency="{$cart_currency_iso_code|escape:'htmlall':'UTF-8'}"
-           data-transaction="{$transaction|escape:'htmlall':'UTF-8'}">
+           data-transaction-email="{$customer->email}"
+           data-transaction-amount="{$order->total_paid|escape:'htmlall':'UTF-8'}"
+           data-transaction-currency="{$currency->iso_code|escape:'htmlall':'UTF-8'}"
+           data-transaction-id="{$transaction_id|escape:'htmlall':'UTF-8'}"
+        >
           {l s='click here' mod='mtpayment'}
         </a>
       </p>
-      {/if}
     </td>
   </tr>
   {else}
@@ -47,14 +43,18 @@
           {$row.ostate_name|escape:'html':'UTF-8'}
         </span>
       </p>
-      {if $row['id_order_state'] == $id_order_state_pending && $allow_different_payment}
-      <p class="jsAllowDifferentPayment">
+      <p>
         {l s='Check your email, we sent you an invoice. If you wish to use other methods for payment' mod='mtpayment'} -
-        <a href="#" class="mtpayment-submit" data-ws-id="{$transaction.id_websocket|escape:'htmlall':'UTF-8'}">
+        <a href="#"
+           class="mtpayment-submit"
+           data-transaction-email="{$customer->email}"
+           data-transaction-amount="{$order->total_paid|escape:'htmlall':'UTF-8'}"
+           data-transaction-currency="{$currency->iso_code|escape:'htmlall':'UTF-8'}"
+           data-transaction-id="{$transaction_id|escape:'htmlall':'UTF-8'}"
+        >
           {l s='click here' mod='mtpayment'}
         </a>
       </p>
-      {/if}
     </td>
   </tr>
   {/if}
