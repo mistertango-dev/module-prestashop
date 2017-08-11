@@ -1,14 +1,14 @@
 <?php
 
-if (!defined('_PS_VERSION_'))
+if (!defined('_PS_VERSION_')) {
     exit;
+}
 
 /**
  * Class MTTools
  */
 class MTConfiguration
 {
-
     /**
      *
      */
@@ -22,12 +22,7 @@ class MTConfiguration
     /**
      *
      */
-    const NAME_ENABLED_CONFIRM_PAGE = 'MT_ENABLED_CONFIRM_PAGE';
-
-    /**
-     *
-     */
-    const NAME_ENABLED_SUCCESS_PAGE = 'MT_ENABLED_SUCCESS_PAGE';
+    const NAME_CALLBACK_URL = 'MT_CALLBACK_URL';
 
     /**
      *
@@ -69,37 +64,26 @@ class MTConfiguration
     }
 
     /**
-     * @return mixed
+     * @param bool $encrypt
+     * @return string
      */
-    public static function isEnabledConfirmPage()
+    public static function getCallbackUrl($encrypt = false)
     {
-        return (int)Configuration::get(self::NAME_ENABLED_CONFIRM_PAGE);
+        $callbackUrl = trim(Configuration::get(self::NAME_CALLBACK_URL));
+        if (!empty($callbackUrl) && $encrypt) {
+            $callbackUrl = MTTools::encrypt($callbackUrl, self::getSecretKey());
+        }
+
+        return $callbackUrl;
     }
 
     /**
      * @param $value
      * @return mixed
      */
-    public static function updateEnabledConfirmPage($value)
+    public static function updateCallbackUrl($value)
     {
-        return Configuration::updateValue(self::NAME_ENABLED_CONFIRM_PAGE, $value);
-    }
-
-    /**
-     * @return mixed
-     */
-    public static function isEnabledSuccessPage()
-    {
-        return (int)Configuration::get(self::NAME_ENABLED_SUCCESS_PAGE);
-    }
-
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public static function updateEnabledSuccessPage($value)
-    {
-        return Configuration::updateValue(self::NAME_ENABLED_SUCCESS_PAGE, $value);
+        return Configuration::updateValue(self::NAME_CALLBACK_URL, $value);
     }
 
     /**
