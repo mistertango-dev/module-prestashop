@@ -286,7 +286,7 @@ class MTPayment extends PaymentModule
             ->setModuleName($this->name)
             ->setCallToActionText($this->trans('Pay by MisterTango', array(), 'Modules.MTPayment.Shop'))
             ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
-            ->setAdditionalInformation($this->fetch('module:mtpayment/views/templates/hook/mtpayment_intro.tpl'));
+            ->setAdditionalInformation($this->fetch('module:mtpayment/views/templates/hook/payment_options.tpl'));
         $payment_options = [
             $newOption,
         ];

@@ -55,6 +55,7 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             ));
         }
 
+        $this->context->controller->addJS(_MODULE_DIR_ . $this->module->name . '/views/js/mtpayment.js');
         $this->context->controller->addJS(_MODULE_DIR_ . $this->module->name . '/views/js/order-states.js');
 
         $this->assignTemplateAssets($this->context->smarty, $order, $cart);
@@ -74,7 +75,7 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             )));
         }
 
-        $id_order = Tools::getValue('order');
+        $id_order = Tools::getValue('id_order');
 
         $order = new Order($id_order);
 
@@ -153,7 +154,10 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             'mtpayment_path' => MTPayment::getInstance()->getPath(),
             'url_order_states' => $this->context->link->getModuleLink(
                 'mtpayment',
-                'order-states'
+                'order-states',
+                array(
+                    'id_order' => $order->id,
+                )
             ),
             'url_order_confirmation' => Context::getContext()->link->getPageLink(
                 'order-confirmation',
@@ -168,6 +172,7 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             ),
             'currency' => new Currency($order->id_currency),
             'customer' => $customer,
+            'auto_open' => Tools::getValue('auto') === 'open',
             'order' => $order,
             'history' => $history,
             'transaction_id' => $order->id . '_' . date('YmdHis'),

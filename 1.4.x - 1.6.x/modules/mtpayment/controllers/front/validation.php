@@ -50,6 +50,7 @@ class MTPaymentValidationModuleFrontController extends ModuleFrontController
                 'order-states',
                 array(
                     'id_order' => $id_order,
+                    'auto' => 'open',
                 )
             )
         );

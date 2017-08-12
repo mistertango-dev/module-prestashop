@@ -1,15 +1,39 @@
 MTPayment = {
-    isOpen: false,
-    success: false,
-    order: null,
-    isOfflinePayment: false,
-    transaction: null,
-    customerEmail: null,
-    amount: null,
-    currency: null,
-    language: null,
-    init: function () {
-        mrTangoCollect.set.recipient(MTPAYMENT_USERNAME);
+    config: {
+        autoOpen: null,
+        orderId: null,
+        username: null,
+        callbackUrl: null,
+        locale: null
+    },
+    state: {
+        open: false,
+        offlinePayment: false,
+        success: false
+    },
+    init: function (config) {
+        $.getScript(MTPAYMENT_URL_SCRIPT, function (data, textStatus, jqxhr) {
+            MTPayment.config.autoOpen = MTPAYMENT_AUTO_OPEN;
+            MTPayment.config.orderId = MTPAYMENT_ORDER_ID;
+            MTPayment.config.username = MTPAYMENT_USERNAME;
+            MTPayment.config.callbackUrl = MTPAYMENT_CALLBACK_URL;
+            MTPayment.config.locale = MTPAYMENT_LANGUAGE;
+
+            MTPayment.load(function () {
+                $(document).on('click', '[data-mtpayment-trigger]', function () {
+                    MTPayment.open($(this));
+                });
+
+                if (MTPayment.config.autoOpen === 1) {
+                    MTPayment.open($('[data-mtpayment-trigger]').eq(0));
+                }
+            });
+        });
+    },
+    load: function (afterLoad) {
+        mrTangoCollect.load();
+
+        mrTangoCollect.set.recipient(MTPayment.config.username);
 
         mrTangoCollect.onOpened = MTPayment.onOpen;
         mrTangoCollect.onClosed = MTPayment.onClose;
@@ -17,58 +41,46 @@ MTPayment = {
         mrTangoCollect.onSuccess = MTPayment.onSuccess;
         mrTangoCollect.onOffLinePayment = MTPayment.onOfflinePayment;
 
-        MTPayment.initButtonPay();
+        afterLoad();
     },
-    initButtonPay: function () {
-        $(document).on('click', '.mtpayment-submit', function (e) {
-            if (e.isDefaultPrevented()) {
-                return;
-            }
+    open: function ($target) {
+        MTPayment.state.offlinePayment = false;
+        MTPayment.state.open = true;
 
-            mrTangoCollect.set.description($(this).data('transaction-id'));
-            mrTangoCollect.set.payer($(this).data('transaction-email'));
-            mrTangoCollect.set.amount($(this).data('transaction-amount'));
-            mrTangoCollect.set.currency($(this).data('transaction-currency'));
-            mrTangoCollect.set.lang(MTPAYMENT_LANGUAGE);
-            if (MTPAYMENT_CALLBACK_URL) {
-                mrTangoCollect.custom = {'callback': MTPAYMENT_CALLBACK_URL};
-            }
+        mrTangoCollect.set.description($target.attr('data-transaction-id'));
+        mrTangoCollect.set.payer($target.attr('data-transaction-email'));
+        mrTangoCollect.set.amount($target.attr('data-transaction-amount'));
+        mrTangoCollect.set.currency($target.attr('data-transaction-currency'));
+        mrTangoCollect.set.lang(MTPayment.config.locale);
+        if (MTPayment.config.callbackUrl) {
+            mrTangoCollect.custom = {'callback': MTPayment.config.callbackUrl};
+        }
 
-            MTPayment.isOpen = true;
-            mrTangoCollect.submit();
-
-            return false;
-        });
+        mrTangoCollect.submit();
     },
     onOpen: function () {
-        MTPayment.isOpen = true;
+        MTPayment.state.open = true;
     },
     onOfflinePayment: function (response) {
         mrTangoCollect.onSuccess = function () {};
-        MTPayment.isOfflinePayment = true;
+        MTPayment.state.offlinePayment = true;
     },
     onSuccess: function (response) {
-        MTPayment.success = true;
-
-        if (MTPayment.isOpen === false) {
-            window.location.href = MTPAYMENT_URL_ORDER_CONFIRMATION;
-        }
+        MTPayment.state.success = true;
     },
     onClose: function () {
-        MTPayment.isOpen = false;
+        MTPayment.state.open = false;
 
-        if (MTPayment.success) {
+        if (MTPayment.state.success) {
             window.location.href = MTPAYMENT_URL_ORDER_CONFIRMATION;
+
+            return;
+        }
+
+        if (MTPayment.config.autoOpen) {
+            window.location.href = MTPAYMENT_URL_ORDER_STATES;
         }
     }
 };
 
-document.addEventListener(
-    'DOMContentLoaded',
-    function () {
-        $.getScript(MTPAYMENT_URL_SCRIPT, function (data, textStatus, jqxhr) {
-            MTPayment.init();
-        });
-    },
-    false
-);
+$(MTPayment.init);
