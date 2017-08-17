@@ -41,7 +41,7 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
 
         $cart = new Cart($order->id_cart);
         $customer = new Customer($cart->id_customer);
-        if ($order->getCurrentState() == _PS_OS_PAYMENT_ && MTConfiguration::isEnabledSuccessPage()) {
+        if ($order->getCurrentState() == _PS_OS_PAYMENT_) {
             Tools::redirect(Context::getContext()->link->getPageLink(
                 'order-confirmation',
                 null,
@@ -55,12 +55,12 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             ));
         }
 
-        MTPayment::getInstance()->assignTemplateAssets($this->context->smarty, $cart);
+        $this->context->controller->addJS(_MODULE_DIR_ . $this->module->name . '/views/js/mtpayment.js');
         $this->context->controller->addJS(_MODULE_DIR_ . $this->module->name . '/views/js/order-states.js');
 
         $this->assignTemplateAssets($this->context->smarty, $order, $cart);
 
-        $this->setTemplate('module:mtpayment/views/templates/front/order-states.tpl');
+        $this->setTemplate('module:mtpayment/views/templates/front/order_states.tpl');
     }
 
     /**
@@ -75,7 +75,7 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             )));
         }
 
-        $id_order = Tools::getValue('order');
+        $id_order = Tools::getValue('id_order');
 
         $order = new Order($id_order);
 
@@ -83,26 +83,25 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
             $cart = new Cart($order->id_cart);
             $customer = new Customer($cart->id_customer);
 
-            MTPayment::getInstance()->assignTemplateAssets($this->context->smarty, $cart);
             $this->assignTemplateAssets($this->context->smarty, $order, $cart);
 
             $path_table_order_states =
                 _PS_MODULE_DIR_
                 . $this->module->name
-                . '/views/templates/front/order-states-table.tpl';
+                . '/views/templates/front/_partials/order_states_table.tpl';
 
             $path_themes_table_order_states =
                 _PS_THEME_DIR_
                 . 'modules/'
                 . $this->module->name
-                . '/views/templates/front/order-states-table.tpl';
+                . '/views/templates/front/_partials/order_states_table.tpl';
 
             if (file_exists($path_themes_table_order_states)) {
                 $path_table_order_states = $path_themes_table_order_states;
             }
 
             $redirect = false;
-            if ($order->getCurrentState() == _PS_OS_PAYMENT_ && MTConfiguration::isEnabledSuccessPage()) {
+            if ($order->getCurrentState() == _PS_OS_PAYMENT_) {
                 $redirect = Context::getContext()->link->getPageLink(
                     'order-confirmation',
                     null,
@@ -131,14 +130,13 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
 
     /**
      * @param $smarty
-     * @param $order
-     * @param $cart
+     * @param Order $order
+     * @param Cart $cart
      */
-    private function assignTemplateAssets($smarty, $order, $cart)
+    private function assignTemplateAssets($smarty, Order $order, Cart $cart)
     {
-        $id_order_state_pending = MTConfiguration::getOsPending();
         $history = null;
-        $allow_different_payment = true;
+        $customer = new Customer($cart->id_customer);
 
         if (Validate::isLoadedObject($order)) {
             $history = $order->getHistory($this->context->language->id);
@@ -147,21 +145,37 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
                 if (isset($order_state['color'])) {
                     $order_state['text-color'] = Tools::getBrightness($order_state['color']) < 128 ? 'white' : 'black';
                 }
-                if ($order_state['id_order_state'] != $id_order_state_pending) {
-                    $allow_different_payment = false;
-                }
             }
         }
-		
-		$transaction = MTTransactions::getLastForOrder($order->id);
 
         $smarty->assign(array(
+            'mtpayment_username' => MTConfiguration::getUsername(),
+            'mtpayment_callback_url' => MTConfiguration::getCallbackUrl(true),
+            'mtpayment_path' => MTPayment::getInstance()->getPath(),
+            'url_order_states' => $this->context->link->getModuleLink(
+                'mtpayment',
+                'order-states',
+                array(
+                    'id_order' => $order->id,
+                )
+            ),
+            'url_order_confirmation' => Context::getContext()->link->getPageLink(
+                'order-confirmation',
+                null,
+                null,
+                array(
+                    'id_cart' => $cart->id,
+                    'id_module' => MTPayment::getInstance()->getId(),
+                    'id_order' => $order->id,
+                    'key' => $customer->secure_key,
+                )
+            ),
+            'currency' => new Currency($order->id_currency),
+            'customer' => $customer,
+            'auto_open' => Tools::getValue('auto') === 'open',
             'order' => $order,
             'history' => $history,
-            'websocket' => isset($transaction['websocket'])?$transaction['websocket']:null,
-            'total' => $cart->getOrderTotal(true, Cart::BOTH),
-            'id_order_state_pending' => $id_order_state_pending,
-            'allow_different_payment' => $allow_different_payment,
+            'transaction_id' => $order->id . '_' . date('YmdHis'),
         ));
     }
 }

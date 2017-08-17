@@ -14,38 +14,36 @@ if ($hash !== false) {
     }
 
     if (!isset($data->custom) && !isset($data->custom->description)) {
-        die();
+        die('Error occurred: Data is not set or transaction ID is not present');
     }
 
     $message = '';
     $transaction = explode('_', $data->custom->description);
 
     if (count($transaction) != 2) {
-        die();
+        die('Error occurred: Transaction ID is corrupted');
     }
 
-    if (MTCallbacks::exists($data->callback_uuid)) {
-        die('OK');
+    $order = new Order($transaction[0]);
+    if (!Validate::isLoadedObject($order)) {
+        die('Error occurred: Such order does not exist');
     }
 
-    $success = false;
-
-    try {
-        $id_cart = $transaction[0];
-        $id_transaction = implode('_', $transaction);
-		
-        $success = MTOrders::close(
-            $id_transaction,
-            $data->custom->data->amount
-        );
-    } catch (Exception $e) {
-        die();
+    $transactionAmount = bcdiv($data->custom->data->amount, 1, 2);
+    $orderTotalPaid = bcdiv($order->total_paid, 1, 2);
+    if ($transactionAmount !== $orderTotalPaid) {
+        die('Error occurred: Payment amount does not match to grand total');
     }
 
-    if ($success) {
-        MTCallbacks::insert($data->callback_uuid, $data->custom->description, $data->custom->data->amount);
-        die('OK');
+    if ($order->getCurrentState() == MTConfiguration::getOsPending()) {
+        try {
+            MTOrders::close($order, $transactionAmount);
+        } catch (Exception $e) {
+            die('Error occurred: ' . $e->getMessage());
+        }
     }
+
+    die('OK');
 }
 
-die();
+die('Error occurred: Hash is empty');

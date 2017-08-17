@@ -6,17 +6,14 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-require_once(_PS_MODULE_DIR_ . 'mtpayment/mtconfiguration.php');
-require_once(_PS_MODULE_DIR_ . 'mtpayment/mttransactions.php');
-require_once(_PS_MODULE_DIR_ . 'mtpayment/mtorders.php');
-require_once(_PS_MODULE_DIR_ . 'mtpayment/mtcallbacks.php');
+require_once(_PS_MODULE_DIR_.'mtpayment/mtconfiguration.php');
+require_once(_PS_MODULE_DIR_.'mtpayment/mtorders.php');
 
 /**
  * Class MTPayment
  */
 class MTPayment extends PaymentModule
 {
-
     /**
      * @var MTPayment
      */
@@ -34,11 +31,11 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->author = 'MisterTango';
-        $this->version = '1.3.0';
+        $this->version = '1.3.1';
         $this->need_instance = 1;
 
         $this->ps_versions_compliancy = array('min' => '1.7.0.0', 'max' => _PS_VERSION_);
-        $this->controllers = array('confirm', 'orderstates', 'validateorder', 'validatetransaction');
+        $this->controllers = array('confirm', 'orderstates');
         $this->is_eu_compatible = 1;
         $this->currencies = false;
 
@@ -64,8 +61,6 @@ class MTPayment extends PaymentModule
         if (
             !parent::install() ||
             !$this->registerHooks($hooks) ||
-            !MTTransactions::install() ||
-            !MTCallbacks::install() ||
             !MTOrders::insertState()
         ) {
             return false;
@@ -79,8 +74,8 @@ class MTPayment extends PaymentModule
      */
     private function registerHooks($hooks)
     {
-        foreach($hooks AS $hook) {
-            if(!$this->registerHook($hook)) {
+        foreach ($hooks AS $hook) {
+            if (!$this->registerHook($hook)) {
                 return false;
             }
         }
@@ -95,8 +90,6 @@ class MTPayment extends PaymentModule
     {
         if (
             !parent::uninstall() ||
-            !MTTransactions::uninstall() ||
-            !MTCallbacks::uninstall() ||
             !MTOrders::deleteState()
         ) {
             return false;
@@ -123,6 +116,14 @@ class MTPayment extends PaymentModule
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->_path;
     }
 
     /**
@@ -158,7 +159,6 @@ class MTPayment extends PaymentModule
         if (Tools::isSubmit('btnSubmit')) {
             MTConfiguration::updateUsername(Tools::getValue(MTConfiguration::NAME_USERNAME));
             MTConfiguration::updateSecretKey(Tools::getValue(MTConfiguration::NAME_SECRET_KEY));
-            MTConfiguration::updateEnabledSuccessPage(Tools::getValue(MTConfiguration::NAME_ENABLED_SUCCESS_PAGE));
         }
 
         return $this->displayConfirmation($this->l('Settings updated'));
@@ -189,24 +189,10 @@ class MTPayment extends PaymentModule
                         'required' => true,
                     ),
                     array(
-                        'type' => 'select',
-                        'label' => $this->l('Enable success page'),
-                        'name' => MTConfiguration::NAME_ENABLED_SUCCESS_PAGE,
+                        'type' => 'text',
+                        'label' => $this->l('Callback URL'),
+                        'name' => MTConfiguration::NAME_CALLBACK_URL,
                         'required' => true,
-                        'options' => array(
-                            'query' => array(
-                                array(
-                                    'id_option' => 0,
-                                    'name' => $this->l('No')
-                                ),
-                                array(
-                                    'id_option' => 1,
-                                    'name' => $this->l('Yes')
-                                ),
-                            ),
-                            'id' => 'id_option',
-                            'name' => 'name'
-                        )
                     ),
                 ),
                 'submit' => array(
@@ -230,10 +216,10 @@ class MTPayment extends PaymentModule
         $helper->submit_action = 'btnSubmit';
         $helper->currentIndex =
             $this->context->link->getAdminLink('AdminModules', false)
-            . '&configure='
-            . $this->name . '&tab_module='
-            . $this->tab . '&module_name='
-            . $this->name;
+            .'&configure='
+            .$this->name.'&tab_module='
+            .$this->tab.'&module_name='
+            .$this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->tpl_vars = array(
             'fields_value' => $this->getFormFieldsValues(),
@@ -258,69 +244,16 @@ class MTPayment extends PaymentModule
                 MTConfiguration::NAME_SECRET_KEY,
                 MTConfiguration::getSecretKey()
             ),
-            MTConfiguration::NAME_ENABLED_SUCCESS_PAGE => Tools::getValue(
-                MTConfiguration::NAME_ENABLED_SUCCESS_PAGE,
-                (int)MTConfiguration::isEnabledSuccessPage()
+            MTConfiguration::NAME_CALLBACK_URL => Tools::getValue(
+                MTConfiguration::NAME_CALLBACK_URL,
+                MTConfiguration::getCallbackUrl()
             ),
         );
     }
 
     /**
-     * Presta 1.5 header hook
-     * @deprecated and will be removed later
      * @param $params
-     */
-    public function hookDisplayHeader($params)
-    {
-        return $this->fetch(__FILE__, 'header.tpl');
-    }
-
-    /**
-     * Presta 1.4 header hook
-     * @deprecated and will be removed later
-     * @param $params
-     */
-    public function hookHeader($params)
-    {
-        return $this->fetch(__FILE__, 'header.tpl');
-    }
-
-    /**
-     * @param $params
-     */
-    public function hookDisplayOrderStateInfo($params)
-    {
-        $id_order_state_pending = MTConfiguration::getOsPending();
-        $allow_different_payment = true;
-        $order = $params['order'];
-        $cart = new Cart($order->id_cart);
-        $history = $order->getHistory($this->context->language->id);
-
-        foreach ($history as &$order_state) {
-            if ($order_state['id_order_state'] != $id_order_state_pending) {
-                $allow_different_payment = false;
-            }
-        }
-
-        if ($params['id_order_state'] != $id_order_state_pending) {
-            $allow_different_payment = false;
-        }
-
-        $this->assignTemplateAssets($this->smarty, $cart);
-
-		$transaction = MTTransactions::getLastForOrder($order->id);
-		
-        $this->smarty->assign(array(
-            'order' => $order,
-            'websocket' => isset($transaction['websocket'])?$transaction['websocket']:null,
-            'allow_different_payment' => $allow_different_payment,
-        ));
-
-        return $this->fetch('module:mtpayment/views/templates/hook/order-state-info.tpl');
-    }
-
-    /**
-     * @param $params
+     * @return mixed|void
      */
     public function hookPaymentReturn($params)
     {
@@ -349,49 +282,16 @@ class MTPayment extends PaymentModule
         }
 
         $newOption = new PaymentOption();
-        $newOption->setCallToActionText($this->trans('Pay by MisterTango', array(), 'Modules.MTPayment.Shop'))
-            ->setAction($this->context->link->getModuleLink($this->name, 'confirm', array(), true))
+        $newOption
+            ->setModuleName($this->name)
+            ->setCallToActionText($this->trans('Pay by MisterTango', array(), 'Modules.MTPayment.Shop'))
+            ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
             ->setAdditionalInformation($this->fetch('module:mtpayment/views/templates/hook/payment_options.tpl'));
-
         $payment_options = [
             $newOption,
         ];
+
         return $payment_options;
-    }
-
-    /**
-     * @param $smarty
-     * @param $cart
-     */
-    public function assignTemplateAssets($smarty, $cart)
-    {
-        $this->context->controller->addCSS($this->_path . 'views/css/mtpayment.css');
-
-        $currency = new Currency((int)$cart->id_currency);
-
-        $smarty->assign(array(
-            'mtpayment_username' => MTConfiguration::getUsername(),
-            'mtpayment_enabled_success_page' => MTConfiguration::isEnabledSuccessPage(),
-            'mtpayment_url_validate_order' => $this->context->link->getModuleLink(
-                'mtpayment',
-                'validate-order'
-            ),
-            'mtpayment_url_validate_transaction' => $this->context->link->getModuleLink(
-                'mtpayment',
-                'validate-transaction'
-            ),
-            'mtpayment_url_order_states' => $this->context->link->getModuleLink(
-                'mtpayment',
-                'order-states'
-            ),
-            'mtpayment_version' => $this->version,
-            'mtpayment_path' => $this->_path,
-            'enabled_success_page' => MTConfiguration::isEnabledSuccessPage(),
-            'customer_email' => $this->getContextCustomer()->email,
-            'transaction' => $cart->id . '_' . time(),
-            'cart_currency_iso_code' => $currency->iso_code,
-            'amount' => number_format($cart->getOrderTotal(), 2, '.', ''),
-        ));
     }
 
     /**
@@ -423,6 +323,6 @@ class MTPayment extends PaymentModule
      */
     public function setContextCustomer($id_customer)
     {
-         $this->context->customer = new Customer($id_customer);
+        $this->context->customer = new Customer($id_customer);
     }
 }

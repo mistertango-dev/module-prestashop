@@ -1,16 +1,17 @@
 <?php
 
-if (!defined('_PS_VERSION_'))
+if (!defined('_PS_VERSION_')) {
     exit;
+}
 
-require_once(_PS_MODULE_DIR_ . 'mtpayment/mtpayment.php');
+require_once(_PS_MODULE_DIR_.'mtpayment/mtpayment.php');
 
 /**
  * Presta 1.4 compatibility
  */
-
-class MtPayment_1_4 {
-    const VIEWS_PATH =  'backward_compatibility/1.4/views';
+class MtPayment_1_4
+{
+    const VIEWS_PATH = 'backward_compatibility/1.4/views';
 
     /**
      * @return string
@@ -21,40 +22,37 @@ class MtPayment_1_4 {
         $smarty = $module->context->smarty;
 
         $fields = array(
-            'username'  => array(
+            'username' => array(
                 'name' => MTConfiguration::NAME_USERNAME,
-                'value' => MTConfiguration::getUsername()
+                'value' => MTConfiguration::getUsername(),
             ),
             'secret_key' => array(
                 'name' => MTConfiguration::NAME_SECRET_KEY,
-                'value' => MTConfiguration::getSecretKey()
+                'value' => MTConfiguration::getSecretKey(),
             ),
-            'enable_confirm_page' => array(
-                'name' => MTConfiguration::NAME_ENABLED_CONFIRM_PAGE,
-                'value' => MTConfiguration::isEnabledConfirmPage()
+            'callback_url' => array(
+                'name' => MTConfiguration::NAME_CALLBACK_URL,
+                'value' => MTConfiguration::getCallbackUrl(),
             ),
-            'enable_success_page' => array(
-                'name' => MTConfiguration::NAME_ENABLED_SUCCESS_PAGE,
-                'value' => MTConfiguration::isEnabledSuccessPage()
-            )
         );
 
         $smarty->assign('views_path', '/modules/mtpayment/backward_compatibility/1.4/views');
         $smarty->assign('fields', $fields);
 
-	die($module->display('mtpayment.php', self::VIEWS_PATH . '/templates/back/settings.tpl'));
+        die($module->display('mtpayment.php', self::VIEWS_PATH.'/templates/back/settings.tpl'));
 
-        return $module->display('mtpayment.php', self::VIEWS_PATH . '/templates/back/settings.tpl');
+        return $module->display('mtpayment.php', self::VIEWS_PATH.'/templates/back/settings.tpl');
     }
 
     /**
      * @param $controller
      * @return string
      */
-    public static function getControllerLink ($controller)
+    public static function getControllerLink($controller)
     {
         $values = array('controller' => $controller);
-        return _PS_BASE_URL_ . '/modules/mtpayment/controllers.php' . '?' . http_build_query($values);
+
+        return _PS_BASE_URL_.'/modules/mtpayment/controllers.php'.'?'.http_build_query($values);
     }
 
     /**
@@ -64,8 +62,8 @@ class MtPayment_1_4 {
     {
         $module = MTPayment::getInstance();
 
-        $module->smarty->assign('confirm_link', self::getControllerLink('confirm'));
+        $module->smarty->assign('confirm_link', self::getControllerLink('validation'));
 
-        return $module->display('mtpayment.php', self::VIEWS_PATH . '/templates/hook/payment.tpl');
+        return $module->display('mtpayment.php', self::VIEWS_PATH.'/templates/hook/payment.tpl');
     }
 }

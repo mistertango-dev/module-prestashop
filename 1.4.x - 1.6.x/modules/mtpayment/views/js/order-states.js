@@ -1,3 +1,7 @@
+if (typeof MTPayment === 'undefined') {
+    MTPayment = {};
+}
+
 MTPayment.OrderStates = {
     init: function () {
         setInterval(MTPayment.OrderStates.updateTable, 30000);
@@ -14,14 +18,11 @@ MTPayment.OrderStates = {
             cache: false,
             data: {
                 ajax: true,
-                order: MTPAYMENT_ORDER_ID
+                id_order: MTPAYMENT_ORDER_ID
             },
             success: function(data)
             {
                 $('#mtpayment-order-states-table').replaceWith(data.html);
-                if (MTPayment.disallowDifferentPayment) {
-                    $('.jsAllowDifferentPayment').remove();
-                }
 
                 if (data.redirect) {
                     window.location.href = data.redirect;
