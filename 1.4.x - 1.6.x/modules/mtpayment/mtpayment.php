@@ -167,6 +167,7 @@ class MTPayment extends PaymentModule
         if (Tools::isSubmit('btnSubmit')) {
             MTConfiguration::updateUsername(Tools::getValue(MTConfiguration::NAME_USERNAME));
             MTConfiguration::updateSecretKey(Tools::getValue(MTConfiguration::NAME_SECRET_KEY));
+            MTConfiguration::updateCallbackUrl(Tools::getValue(MTConfiguration::NAME_CALLBACK_URL));
         }
 
         return $this->displayConfirmation($this->l('Settings updated'));
@@ -200,7 +201,7 @@ class MTPayment extends PaymentModule
                         'type' => 'text',
                         'label' => $this->l('Callback URL'),
                         'name' => MTConfiguration::NAME_CALLBACK_URL,
-                        'required' => true,
+                        'required' => false,
                     ),
                 ),
                 'submit' => array(
