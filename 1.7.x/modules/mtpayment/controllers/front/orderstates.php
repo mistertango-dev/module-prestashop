@@ -60,6 +60,10 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
 
         $this->assignTemplateAssets($this->context->smarty, $order, $cart);
 
+				if (!Validate::isLoadedObject($this->context->customer)) {
+            die($this->module->l('You aren\'t logged in', 'mtpayment'));
+        }
+
         $this->setTemplate('module:mtpayment/views/templates/front/order_states.tpl');
     }
 

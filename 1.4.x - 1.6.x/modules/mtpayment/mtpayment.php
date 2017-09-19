@@ -29,7 +29,7 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->tab = 'payments_gateways';
-        $this->version = '1.3.1';
+        $this->version = '1.3.2';
         $this->author = 'MisterTango';
         $this->is_eu_compatible = 1;
         $this->bootstrap = true;
@@ -167,6 +167,7 @@ class MTPayment extends PaymentModule
         if (Tools::isSubmit('btnSubmit')) {
             MTConfiguration::updateUsername(Tools::getValue(MTConfiguration::NAME_USERNAME));
             MTConfiguration::updateSecretKey(Tools::getValue(MTConfiguration::NAME_SECRET_KEY));
+            MTConfiguration::updateCallbackUrl(Tools::getValue(MTConfiguration::NAME_CALLBACK_URL));
         }
 
         return $this->displayConfirmation($this->l('Settings updated'));
@@ -200,7 +201,7 @@ class MTPayment extends PaymentModule
                         'type' => 'text',
                         'label' => $this->l('Callback URL'),
                         'name' => MTConfiguration::NAME_CALLBACK_URL,
-                        'required' => true,
+                        'required' => false,
                     ),
                 ),
                 'submit' => array(
