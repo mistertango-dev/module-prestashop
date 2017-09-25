@@ -60,7 +60,7 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
 
         $this->assignTemplateAssets($this->context->smarty, $order, $cart);
 
-				if (!Validate::isLoadedObject($this->context->customer)) {
+				if (!Validate::isLoadedObject($this->context->customer) || $this->context->customer->id != $order->id_customer) {
             die($this->module->l('You aren\'t logged in', 'mtpayment'));
         }
 
