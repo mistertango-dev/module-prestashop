@@ -72,16 +72,16 @@ class MTPaymentOrderStatesModuleFrontController extends ModuleFrontController
      */
     public function ajaxProcessGetHtmlTable()
     {
-        if (!Validate::isLoadedObject($this->context->customer)) {
+				$id_order = Tools::getValue('id_order');
+
+				$order = new Order($id_order);
+
+        if (!Validate::isLoadedObject($this->context->customer) || $this->context->customer->id != $order->id_customer) {
             die(Tools::jsonEncode(array(
                 'success' => false,
                 'error' => $this->module->l('You aren\'t logged in', 'mtpayment'),
             )));
         }
-
-        $id_order = Tools::getValue('id_order');
-
-        $order = new Order($id_order);
 
         if (Validate::isLoadedObject($order)) {
             $cart = new Cart($order->id_cart);
