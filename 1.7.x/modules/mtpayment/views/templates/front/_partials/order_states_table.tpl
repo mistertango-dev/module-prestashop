@@ -10,7 +10,7 @@
   {foreach from=$history item=row key=key name=history}
     <tr>
       <td>
-          {dateFormat date=$row['id_order'] full=true}
+          {$row['id_order']}
       </td>
       <td>
           {dateFormat date=$row['date_add'] full=true}
