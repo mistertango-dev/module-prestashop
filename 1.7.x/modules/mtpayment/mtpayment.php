@@ -31,7 +31,7 @@ class MTPayment extends PaymentModule
     {
         $this->name = 'mtpayment';
         $this->author = 'MisterTango';
-        $this->version = '1.3.4';
+        $this->version = '1.3.5';
         $this->need_instance = 1;
 
         $this->ps_versions_compliancy = array('min' => '1.7.0.0', 'max' => _PS_VERSION_);
