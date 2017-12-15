@@ -35,7 +35,7 @@ if ($hash !== false) {
         die('Error occurred: Payment amount does not match to grand total');
     }
 
-    if ($order->getCurrentState() == MTConfiguration::getOsPending()) {
+    if ($order->getCurrentState() == MTConfiguration::getOsPending() || $order->getCurrentState() == (int)Configuration::get('PS_OS_OUTOFSTOCK_UNPAID')) {
         try {
             MTOrders::close($order, $transactionAmount);
         } catch (Exception $e) {
